@@ -1,22 +1,29 @@
 package ru.practicum.statserver.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.statserver.mapper.RequestHitDto2;
+import ru.practicum.statserver.model.Hit;
+import ru.practicum.statserver.service.StatService;
 
 import java.time.LocalDateTime;
 
-@Controller
+@RestController
 @Slf4j
+@RequiredArgsConstructor
 public class StatController {
+    private final StatService statService;
+
     @PostMapping("/hit")
-    public ResponseEntity<Object> saveHit(Object object) {
-        log.info("POST-request was received at /hit . Data: {}", object);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<Hit> saveHit(RequestHitDto2 requestHitDto) {
+        log.info("POST-request was received at /hit . Data: {}", requestHitDto);
+        return new ResponseEntity<>(statService.saveHit(requestHitDto), HttpStatus.CREATED);
     }
 
     @GetMapping("/stats")
