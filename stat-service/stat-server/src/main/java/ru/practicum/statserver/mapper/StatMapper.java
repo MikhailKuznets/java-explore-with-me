@@ -9,5 +9,8 @@ import ru.practicum.statserver.model.Hit;
 @Mapper(componentModel = "spring")
 public interface StatMapper {
     StatMapper INSTANCE = Mappers.getMapper(StatMapper.class);
+
     Hit toHit(RequestHitDto2 requestHitDto);
+
+    ViewStatDto toViewStatDto(ViewStat viewStat);
 }
