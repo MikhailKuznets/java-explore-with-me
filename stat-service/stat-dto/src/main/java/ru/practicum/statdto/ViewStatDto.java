@@ -1,4 +1,4 @@
-package ru.practicum.statserver.mapper;
+package ru.practicum.statdto;
 
 import lombok.Data;
 

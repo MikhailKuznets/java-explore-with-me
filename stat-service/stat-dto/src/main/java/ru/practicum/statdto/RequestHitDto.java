@@ -1,15 +1,17 @@
-package ru.practicum.statserver.mapper;
+package ru.practicum.statdto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
-public class RequestHitDto2 {
+@AllArgsConstructor
+public class RequestHitDto {
     private String app;
     private String uri;
     private String ip;

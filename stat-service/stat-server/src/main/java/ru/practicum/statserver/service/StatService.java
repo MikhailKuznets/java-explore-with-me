@@ -3,9 +3,9 @@ package ru.practicum.statserver.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.statserver.mapper.RequestHitDto2;
+import ru.practicum.statdto.RequestHitDto;
+import ru.practicum.statdto.ViewStatDto;
 import ru.practicum.statserver.mapper.StatMapper;
-import ru.practicum.statserver.mapper.ViewStatDto;
 import ru.practicum.statserver.model.Hit;
 import ru.practicum.statserver.repository.StatRepository;
 
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class StatService {
     private final StatRepository statRepository;
 
-    public Hit saveHit(RequestHitDto2 requestHitDto, LocalDateTime timeStamp) {
+    public Hit saveHit(RequestHitDto requestHitDto, LocalDateTime timeStamp) {
         requestHitDto.setCreated(timeStamp);
         Hit hit = StatMapper.INSTANCE.toHit(requestHitDto);
         return statRepository.save(hit);

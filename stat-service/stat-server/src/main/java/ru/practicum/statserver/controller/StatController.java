@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.statserver.mapper.RequestHitDto2;
+import ru.practicum.statdto.RequestHitDto;
 import ru.practicum.statserver.model.Hit;
 import ru.practicum.statserver.service.StatService;
 
@@ -18,10 +18,10 @@ public class StatController {
     private final StatService statService;
 
     @PostMapping("/hit")
-    public ResponseEntity<Hit> saveHit(@RequestBody RequestHitDto2 requestHitDto) {
+    public ResponseEntity<Hit> saveHit(@RequestBody RequestHitDto requestHitDto) {
         log.info("POST-request was received at /hit . Data: {}", requestHitDto);
-        return new ResponseEntity<>(statService.saveHit(requestHitDto, LocalDateTime.now())
-                , HttpStatus.CREATED);
+        return new ResponseEntity<>(statService.saveHit(requestHitDto, LocalDateTime.now()),
+                HttpStatus.CREATED);
     }
 
     @GetMapping("/stats")
