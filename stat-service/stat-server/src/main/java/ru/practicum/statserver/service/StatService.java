@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.statdto.RequestHitDto;
-import ru.practicum.statdto.ViewStatDto;
+import ru.practicum.statdto.RequestViewStatDto;
+import ru.practicum.statdto.ViewsStatsRequest;
 import ru.practicum.statserver.mapper.StatMapper;
 import ru.practicum.statserver.model.Hit;
 import ru.practicum.statserver.repository.StatRepository;
@@ -25,10 +26,12 @@ public class StatService {
         return statRepository.save(hit);
     }
 
-    public Collection<ViewStatDto> getStat(LocalDateTime start,
-                                           LocalDateTime end,
-                                           String[] uris,
-                                           Boolean unique) {
+    public Collection<ViewsStatsRequest> getStat(RequestViewStatDto requestViewStatDto) {
+        LocalDateTime start = requestViewStatDto.getStart();
+        LocalDateTime end = requestViewStatDto.getEnd();
+        String[] uris = requestViewStatDto.getUris();
+        Boolean unique = requestViewStatDto.getUnique();
+
         if (uris == null || uris.length == 0) {
             if (unique == null || unique.equals(false)) {
                 return statRepository.getStat(start, end).stream()

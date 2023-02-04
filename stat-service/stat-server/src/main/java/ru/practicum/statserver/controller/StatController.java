@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.statdto.RequestHitDto;
+import ru.practicum.statdto.RequestViewStatDto;
 import ru.practicum.statserver.model.Hit;
 import ru.practicum.statserver.service.StatService;
 
@@ -32,7 +33,12 @@ public class StatController {
             @RequestParam(defaultValue = "false") Boolean unique) {
         log.info("GET-request was received at /stats? start= {} &end= {} &uris= {} &unique= {} .",
                 start, end, uris, unique);
-        return new ResponseEntity<>(statService.getStat(start, end, uris, unique), HttpStatus.OK);
+        return new ResponseEntity<>(statService.getStat(RequestViewStatDto.builder()
+                .start(start)
+                .end(end)
+                .uris(uris)
+                .unique(unique).build()),
+                HttpStatus.OK);
     }
 
 }

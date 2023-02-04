@@ -4,7 +4,7 @@ package ru.practicum.statserver.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import ru.practicum.statdto.RequestHitDto;
-import ru.practicum.statdto.ViewStatDto;
+import ru.practicum.statdto.ViewsStatsRequest;
 import ru.practicum.statserver.model.Hit;
 
 
@@ -14,5 +14,5 @@ public interface StatMapper {
 
     Hit toHit(RequestHitDto requestHitDto);
 
-    ViewStatDto toViewStatDto(ViewStat viewStat);
+    ViewsStatsRequest toViewStatDto(ViewStat viewStat);
 }
