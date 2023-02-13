@@ -10,8 +10,8 @@ import javax.validation.constraints.NotNull;
 public class RequestUserDto {
     @Email(message = "Incorrect Email")
     @NotNull(message = "Email should not be null")
-    private final String email;
+    private String email;
 
     @NotBlank(message = "Name should not be blank")
-    private final String name;
+    private String name;
 }

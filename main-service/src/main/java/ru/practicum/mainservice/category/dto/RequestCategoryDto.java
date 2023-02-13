@@ -9,5 +9,5 @@ import javax.validation.constraints.Size;
 public class RequestCategoryDto {
     @NotBlank(message = "Category name should not be blank")
     @Size(min = 2, max = 255)
-    private final String name;
+    private String name;
 }

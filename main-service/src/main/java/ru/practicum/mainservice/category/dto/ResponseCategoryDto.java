@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class ResponseCategoryDto {
-    private final Long Id;
-    private final String name;
+    private Long Id;
+    private String name;
 }

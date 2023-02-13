@@ -26,7 +26,7 @@ public class AdminController {
 
     //    Обработка admin/categories
     @PostMapping("/categories")
-    public ResponseEntity<ResponseCategoryDto> createUser(@RequestBody RequestCategoryDto requestCategoryDto) {
+    public ResponseEntity<ResponseCategoryDto> createCategory(@RequestBody RequestCategoryDto requestCategoryDto) {
         log.info("POST-request was received at 'admin/categories' . " +
                 "Create a CATEGORY: {}.", requestCategoryDto);
         return new ResponseEntity<>(categoryService.createCategory(requestCategoryDto), HttpStatus.CREATED);
@@ -39,7 +39,7 @@ public class AdminController {
                         "Patch a CATEGORY with categoryID = {}. New data = {}",
                 catId, catId, requestCategoryDto);
         return new ResponseEntity<>(categoryService.patchCategoryById(catId, requestCategoryDto),
-                HttpStatus.NO_CONTENT);
+                HttpStatus.OK);
     }
 
     @DeleteMapping("/categories/{catId}")
