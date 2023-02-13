@@ -5,10 +5,10 @@ import lombok.Data;
 @Data
 public class ResponseUserDto {
 
-    private final Long id;
+    private Long id;
 
-    private final String email;
+    private String email;
 
-    private final String name;
+    private String name;
 
 }

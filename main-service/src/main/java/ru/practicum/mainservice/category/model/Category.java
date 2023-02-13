@@ -6,11 +6,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Data
 @Entity
 @Table(name = "categories")
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

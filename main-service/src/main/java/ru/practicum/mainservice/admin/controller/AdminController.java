@@ -13,6 +13,8 @@ import ru.practicum.mainservice.user.dto.RequestUserDto;
 import ru.practicum.mainservice.user.dto.ResponseUserDto;
 import ru.practicum.mainservice.user.service.UserService;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 
 @RestController
@@ -63,9 +65,14 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<Collection<ResponseUserDto>> getAllUsers() {
-        log.info("GET-request was received at 'admin/users' . Get all users.");
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+    public ResponseEntity<Collection<ResponseUserDto>> getUsers(
+            @RequestParam(defaultValue = "[]", required = false) int[] ids,
+            @RequestParam(defaultValue = "0", required = false) @PositiveOrZero Integer from,
+            @RequestParam(defaultValue = "10", required = false) @Positive Integer size
+    ) {
+        log.info("GET-request was received at 'admin/users?ids={}&from={}&size={}' . Get users.",
+                ids, from, size);
+        return new ResponseEntity<>(userService.getUsers(ids, from, size), HttpStatus.OK);
     }
 
     @DeleteMapping("/users/{userId}")
