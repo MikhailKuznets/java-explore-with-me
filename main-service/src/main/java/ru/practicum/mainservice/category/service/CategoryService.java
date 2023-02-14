@@ -7,7 +7,7 @@ import ru.practicum.mainservice.category.dto.ResponseCategoryDto;
 import ru.practicum.mainservice.category.mapper.CategoryMapper;
 import ru.practicum.mainservice.category.model.Category;
 import ru.practicum.mainservice.category.repository.CategoryRepository;
-import ru.practicum.mainservice.exceptions.InvalidIdException;
+import ru.practicum.mainservice.exception.InvalidIdException;
 
 import java.util.Collection;
 import java.util.stream.Collectors;

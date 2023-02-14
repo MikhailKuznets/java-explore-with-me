@@ -13,6 +13,7 @@ import ru.practicum.mainservice.user.dto.RequestUserDto;
 import ru.practicum.mainservice.user.dto.ResponseUserDto;
 import ru.practicum.mainservice.user.service.UserService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
@@ -28,15 +29,16 @@ public class AdminController {
 
     //    Обработка admin/categories
     @PostMapping("/categories")
-    public ResponseEntity<ResponseCategoryDto> createCategory(@RequestBody RequestCategoryDto requestCategoryDto) {
+    public ResponseEntity<ResponseCategoryDto> createCategory(@RequestBody @Valid RequestCategoryDto requestCategoryDto) {
         log.info("POST-request was received at 'admin/categories' . " +
                 "Create a CATEGORY: {}.", requestCategoryDto);
         return new ResponseEntity<>(categoryService.createCategory(requestCategoryDto), HttpStatus.CREATED);
     }
 
     @PatchMapping("/categories/{catId}")
-    public ResponseEntity<ResponseCategoryDto> patchCategoryById(@PathVariable Long catId,
-                                                                 @RequestBody RequestCategoryDto requestCategoryDto) {
+    public ResponseEntity<ResponseCategoryDto> patchCategoryById(
+            @PathVariable Long catId,
+            @RequestBody @Valid RequestCategoryDto requestCategoryDto) {
         log.info("PATCH-request was received at 'admin/categories/{}' . " +
                         "Patch a CATEGORY with categoryID = {}. New data = {}",
                 catId, catId, requestCategoryDto);
@@ -58,7 +60,7 @@ public class AdminController {
 
     //    Обработка admin/users
     @PostMapping("/users")
-    public ResponseEntity<ResponseUserDto> createUser(@RequestBody RequestUserDto requestUserDto) {
+    public ResponseEntity<ResponseUserDto> createUser(@RequestBody @Valid RequestUserDto requestUserDto) {
         log.info("POST-request was received at 'admin/users' . " +
                 "Create a USER: {}.", requestUserDto);
         return new ResponseEntity<>(userService.createUser(requestUserDto), HttpStatus.CREATED);

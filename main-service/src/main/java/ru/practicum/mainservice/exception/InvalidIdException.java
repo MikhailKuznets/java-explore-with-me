@@ -1,4 +1,4 @@
-package ru.practicum.mainservice.exceptions;
+package ru.practicum.mainservice.exception;
 
 public class InvalidIdException extends RuntimeException {
 

@@ -3,7 +3,7 @@ package ru.practicum.mainservice.user.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import ru.practicum.mainservice.exceptions.InvalidIdException;
+import ru.practicum.mainservice.exception.InvalidIdException;
 import ru.practicum.mainservice.user.dto.RequestUserDto;
 import ru.practicum.mainservice.user.dto.ResponseUserDto;
 import ru.practicum.mainservice.user.mapper.UserMapper;
