@@ -52,7 +52,7 @@ public class UserService {
 
     private User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> {
-            throw new InvalidIdException("User with ID = " + userId + " does not exist");
+            throw new InvalidIdException("USER with userID = " + userId + " does not exist");
         });
     }
 }

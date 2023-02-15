@@ -48,7 +48,7 @@ public class CategoryService {
 
     private Category findCategory(Long catId) {
         return categoryRepository.findById(catId).orElseThrow(() -> {
-            throw new InvalidIdException("Category with ID = " + catId + " does not exist");
+            throw new InvalidIdException("CATEGORY with categoryID = " + catId + " does not exist");
         });
     }
 
