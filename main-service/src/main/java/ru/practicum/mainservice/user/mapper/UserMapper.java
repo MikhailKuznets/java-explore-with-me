@@ -2,8 +2,8 @@ package ru.practicum.mainservice.user.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-import ru.practicum.mainservice.user.dto.RequestUserDto;
-import ru.practicum.mainservice.user.dto.ResponseUserDto;
+import ru.practicum.mainservice.user.dto.NewUserRequest;
+import ru.practicum.mainservice.user.dto.UserDto;
 import ru.practicum.mainservice.user.dto.UserShortDto;
 import ru.practicum.mainservice.user.model.User;
 
@@ -11,9 +11,9 @@ import ru.practicum.mainservice.user.model.User;
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    User toUser(RequestUserDto requestUserDto);
+    User toUser(NewUserRequest newUserRequest);
 
     UserShortDto toUserShortDto(User user);
 
-    ResponseUserDto toUserDto(User user);
+    UserDto toUserDto(User user);
 }

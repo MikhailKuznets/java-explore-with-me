@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.mainservice.exception.InvalidIdException;
-import ru.practicum.mainservice.user.dto.RequestUserDto;
-import ru.practicum.mainservice.user.dto.ResponseUserDto;
+import ru.practicum.mainservice.user.dto.NewUserRequest;
+import ru.practicum.mainservice.user.dto.UserDto;
 import ru.practicum.mainservice.user.mapper.UserMapper;
 import ru.practicum.mainservice.user.model.User;
 import ru.practicum.mainservice.user.repository.UserRepository;
@@ -21,12 +21,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public ResponseUserDto createUser(RequestUserDto requestUserDto) {
-        User newUser = userMapper.toUser(requestUserDto);
+    public UserDto createUser(NewUserRequest newUserRequest) {
+        User newUser = userMapper.toUser(newUserRequest);
         return userMapper.toUserDto(userRepository.save(newUser));
     }
 
-    public Collection<ResponseUserDto> getUsers(int[] ids, Integer from, Integer size) {
+    public Collection<UserDto> getUsers(int[] ids, Integer from, Integer size) {
         PageRequest pageRequest = PageRequest.of(from, size);
 
         if (ids.length == 0) {

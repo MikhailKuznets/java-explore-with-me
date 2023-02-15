@@ -6,11 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.mainservice.category.dto.RequestCategoryDto;
-import ru.practicum.mainservice.category.dto.ResponseCategoryDto;
+import ru.practicum.mainservice.category.dto.NewCategoryDto;
+import ru.practicum.mainservice.category.dto.CategoryDto;
 import ru.practicum.mainservice.category.service.CategoryService;
-import ru.practicum.mainservice.user.dto.RequestUserDto;
-import ru.practicum.mainservice.user.dto.ResponseUserDto;
+import ru.practicum.mainservice.user.dto.NewUserRequest;
+import ru.practicum.mainservice.user.dto.UserDto;
 import ru.practicum.mainservice.user.service.UserService;
 
 import javax.validation.Valid;
@@ -29,20 +29,20 @@ public class AdminController {
 
     //    Обработка admin/categories
     @PostMapping("/categories")
-    public ResponseEntity<ResponseCategoryDto> createCategory(@RequestBody @Valid RequestCategoryDto requestCategoryDto) {
+    public ResponseEntity<CategoryDto> createCategory(@RequestBody @Valid NewCategoryDto newCategoryDto) {
         log.info("POST-request was received at 'admin/categories' . " +
-                "Create a CATEGORY: {}.", requestCategoryDto);
-        return new ResponseEntity<>(categoryService.createCategory(requestCategoryDto), HttpStatus.CREATED);
+                "Create a CATEGORY: {}.", newCategoryDto);
+        return new ResponseEntity<>(categoryService.createCategory(newCategoryDto), HttpStatus.CREATED);
     }
 
     @PatchMapping("/categories/{catId}")
-    public ResponseEntity<ResponseCategoryDto> patchCategoryById(
+    public ResponseEntity<CategoryDto> patchCategoryById(
             @PathVariable Long catId,
-            @RequestBody @Valid RequestCategoryDto requestCategoryDto) {
+            @RequestBody @Valid NewCategoryDto newCategoryDto) {
         log.info("PATCH-request was received at 'admin/categories/{}' . " +
                         "Patch a CATEGORY with categoryID = {}. New data = {}",
-                catId, catId, requestCategoryDto);
-        return new ResponseEntity<>(categoryService.patchCategoryById(catId, requestCategoryDto),
+                catId, catId, newCategoryDto);
+        return new ResponseEntity<>(categoryService.patchCategoryById(catId, newCategoryDto),
                 HttpStatus.OK);
     }
 
@@ -60,14 +60,14 @@ public class AdminController {
 
     //    Обработка admin/users
     @PostMapping("/users")
-    public ResponseEntity<ResponseUserDto> createUser(@RequestBody @Valid RequestUserDto requestUserDto) {
+    public ResponseEntity<UserDto> createUser(@RequestBody @Valid NewUserRequest newUserRequest) {
         log.info("POST-request was received at 'admin/users' . " +
-                "Create a USER: {}.", requestUserDto);
-        return new ResponseEntity<>(userService.createUser(requestUserDto), HttpStatus.CREATED);
+                "Create a USER: {}.", newUserRequest);
+        return new ResponseEntity<>(userService.createUser(newUserRequest), HttpStatus.CREATED);
     }
 
     @GetMapping("/users")
-    public ResponseEntity<Collection<ResponseUserDto>> getUsers(
+    public ResponseEntity<Collection<UserDto>> getUsers(
             @RequestParam(defaultValue = "[]", required = false) int[] ids,
             @RequestParam(defaultValue = "0", required = false) @PositiveOrZero Integer from,
             @RequestParam(defaultValue = "10", required = false) @Positive Integer size

@@ -3,7 +3,7 @@ package ru.practicum.mainservice.user.dto;
 import lombok.Data;
 
 @Data
-public class ResponseUserDto {
+public class UserDto {
 
     private Long id;
 

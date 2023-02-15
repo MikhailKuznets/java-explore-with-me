@@ -2,8 +2,8 @@ package ru.practicum.mainservice.category.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.mainservice.category.dto.RequestCategoryDto;
-import ru.practicum.mainservice.category.dto.ResponseCategoryDto;
+import ru.practicum.mainservice.category.dto.NewCategoryDto;
+import ru.practicum.mainservice.category.dto.CategoryDto;
 import ru.practicum.mainservice.category.mapper.CategoryMapper;
 import ru.practicum.mainservice.category.model.Category;
 import ru.practicum.mainservice.category.repository.CategoryRepository;
@@ -18,15 +18,15 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
-    public ResponseCategoryDto createCategory(RequestCategoryDto requestCategoryDto) {
-        Category newCategory = categoryMapper.toCategory(requestCategoryDto);
+    public CategoryDto createCategory(NewCategoryDto newCategoryDto) {
+        Category newCategory = categoryMapper.toCategory(newCategoryDto);
         return categoryMapper.toCategoryDto(categoryRepository.save(newCategory));
     }
 
-    public ResponseCategoryDto patchCategoryById(Long catId, RequestCategoryDto requestCategoryDto) {
+    public CategoryDto patchCategoryById(Long catId, NewCategoryDto newCategoryDto) {
         Category selectedCategory = findCategory(catId);
 
-        String updatedName = requestCategoryDto.getName();
+        String updatedName = newCategoryDto.getName();
         selectedCategory.setName(updatedName);
 
         return categoryMapper.toCategoryDto(categoryRepository.save(selectedCategory));
@@ -36,13 +36,13 @@ public class CategoryService {
         categoryRepository.deleteById(catId);
     }
 
-    public Collection<ResponseCategoryDto> getAllCategories(Integer from, Integer size) {
+    public Collection<CategoryDto> getAllCategories(Integer from, Integer size) {
         return categoryRepository.findAll().stream()
                 .map(categoryMapper::toCategoryDto)
                 .collect(Collectors.toList());
     }
 
-    public ResponseCategoryDto getCategoryById(Long catId) {
+    public CategoryDto getCategoryById(Long catId) {
         return categoryMapper.toCategoryDto(findCategory(catId));
     }
 

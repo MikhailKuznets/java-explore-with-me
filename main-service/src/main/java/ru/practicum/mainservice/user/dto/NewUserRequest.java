@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-public class RequestUserDto {
+public class NewUserRequest {
     @Email(message = "Incorrect Email")
     @NotNull(message = "Email should not be null")
     private String email;

@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Data
-public class RequestCategoryDto {
+public class NewCategoryDto {
     @NotBlank(message = "Category name should not be blank")
     @Size(min = 2, max = 255)
     private String name;
