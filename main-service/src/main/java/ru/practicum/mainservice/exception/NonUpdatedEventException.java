@@ -1,12 +1,14 @@
 package ru.practicum.mainservice.exception;
 
-public class NonUpdatedEventException extends RuntimeException {
-    public NonUpdatedEventException(String message) {
-        super(message);
-    }
+import org.springframework.http.HttpStatus;
 
-    @Override
-    public String getMessage() {
-        return super.getMessage();
+import java.time.LocalDateTime;
+
+public class NonUpdatedEventException extends ApiError {
+    public NonUpdatedEventException(String message, LocalDateTime timestamp) {
+        this.status = HttpStatus.FORBIDDEN;
+        this.reason = "For the requested operation the conditions are not met.";
+        this.message = message;
+        this.timestamp = timestamp.withNano(0);
     }
 }

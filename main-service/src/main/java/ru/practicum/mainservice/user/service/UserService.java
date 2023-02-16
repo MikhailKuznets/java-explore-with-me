@@ -10,6 +10,7 @@ import ru.practicum.mainservice.user.mapper.UserMapper;
 import ru.practicum.mainservice.user.model.User;
 import ru.practicum.mainservice.user.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -52,7 +53,7 @@ public class UserService {
 
     private User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> {
-            throw new InvalidIdException("USER with userID = " + userId + " does not exist");
+            throw new InvalidIdException("User", userId, LocalDateTime.now());
         });
     }
 }

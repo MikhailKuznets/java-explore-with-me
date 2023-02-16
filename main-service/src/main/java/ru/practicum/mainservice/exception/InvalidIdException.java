@@ -1,13 +1,15 @@
 package ru.practicum.mainservice.exception;
 
-public class InvalidIdException extends RuntimeException {
+import org.springframework.http.HttpStatus;
 
-    public InvalidIdException(String message) {
-        super(message);
-    }
+import java.time.LocalDateTime;
 
-    @Override
-    public String getMessage() {
-        return super.getMessage();
+public class InvalidIdException extends ApiError {
+
+    public InvalidIdException(String entityType, Long id, LocalDateTime timestamp) {
+        this.status = HttpStatus.NOT_FOUND;
+        this.reason = "The required object was not found.";
+        this.message = entityType + " with id=" + id + " was not found ";
+        this.timestamp = timestamp.withNano(0);
     }
 }

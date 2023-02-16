@@ -6,9 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.mainservice.category.dto.NewCategoryDto;
 import ru.practicum.mainservice.category.dto.CategoryDto;
+import ru.practicum.mainservice.category.dto.NewCategoryDto;
 import ru.practicum.mainservice.category.service.CategoryService;
+import ru.practicum.mainservice.event.dto.EventFullDto;
+import ru.practicum.mainservice.event.dto.UpdateEventAdminRequest;
+import ru.practicum.mainservice.event.service.EventService;
 import ru.practicum.mainservice.user.dto.NewUserRequest;
 import ru.practicum.mainservice.user.dto.UserDto;
 import ru.practicum.mainservice.user.service.UserService;
@@ -26,6 +29,7 @@ import java.util.Collection;
 public class AdminController {
     private final UserService userService;
     private final CategoryService categoryService;
+    private final EventService eventService;
 
     //    Обработка admin/categories
     @PostMapping("/categories")
@@ -55,7 +59,16 @@ public class AdminController {
     }
 
 
-//    Обработка admin/events
+    //    Обработка admin/events
+    @PatchMapping("/events/{eventId}")
+    public ResponseEntity<EventFullDto> updateEventByAdmin(
+            @PathVariable @Positive Long eventId,
+            @RequestBody UpdateEventAdminRequest updateEventAdminRequest) {
+        log.info("PATCH-request was received at 'admin/events/{}' . " +
+                "Patch a EVENT with eventID = {}, from ADMIN.", eventId, eventId);
+        return new ResponseEntity<>(eventService.updateEventByAdmin(eventId, updateEventAdminRequest),
+                HttpStatus.OK);
+    }
 
 
     //    Обработка admin/users

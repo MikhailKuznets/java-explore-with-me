@@ -36,6 +36,6 @@ CREATE TABLE IF NOT EXISTS events
     request_moderation BOOLEAN NOT NULL,
     state  VARCHAR(30)    NOT NULL,
     title  VARCHAR(120)    NOT NULL,
-    views INTEGER NOT NULL,
+--     views INTEGER NOT NULL,
     CONSTRAINT pr_event PRIMARY KEY (category_id)
 );

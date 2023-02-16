@@ -2,13 +2,14 @@ package ru.practicum.mainservice.category.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.mainservice.category.dto.NewCategoryDto;
 import ru.practicum.mainservice.category.dto.CategoryDto;
+import ru.practicum.mainservice.category.dto.NewCategoryDto;
 import ru.practicum.mainservice.category.mapper.CategoryMapper;
 import ru.practicum.mainservice.category.model.Category;
 import ru.practicum.mainservice.category.repository.CategoryRepository;
 import ru.practicum.mainservice.exception.InvalidIdException;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,7 @@ public class CategoryService {
 
     private Category findCategory(Long catId) {
         return categoryRepository.findById(catId).orElseThrow(() -> {
-            throw new InvalidIdException("CATEGORY with categoryID = " + catId + " does not exist");
+            throw new InvalidIdException("Category", catId, LocalDateTime.now());
         });
     }
 

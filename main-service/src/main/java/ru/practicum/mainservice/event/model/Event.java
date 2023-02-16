@@ -45,15 +45,15 @@ public class Event {
     private Location location;
 
     @Column(name = "paid", nullable = false)
-    private Boolean paid = false;
+    private Boolean paid;
 
     @Column(name = "participant_limit", nullable = false)
-    private Integer participantLimit = 0;
+    private Integer participantLimit;
 
 //    publishedOn
 
     @Column(name = "request_moderation", nullable = false)
-    private Boolean requestModeration = true;
+    private Boolean requestModeration;
 
     @Column(name = "state", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -62,6 +62,6 @@ public class Event {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "views", nullable = false)
-    private Integer views = 0;
+//    @Column(name = "views", nullable = false)
+//    private Integer views = 0;
 }

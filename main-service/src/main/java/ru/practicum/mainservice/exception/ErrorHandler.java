@@ -12,18 +12,8 @@ public class ErrorHandler {
     @ExceptionHandler(InvalidIdException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorResponse handleInvalidIdException(final InvalidIdException e) {
-        log.error("HTTP status code 404 - invalid ID = {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
+        log.error("HTTP status code 404 - " + e.getMessage());
+        return new ErrorResponse(e);
     }
 }
 
-
-class ErrorResponse {
-    private final String error;
-    public ErrorResponse(String error) {
-        this.error = error;
-    }
-    public String getError() {
-        return error;
-    }
-}

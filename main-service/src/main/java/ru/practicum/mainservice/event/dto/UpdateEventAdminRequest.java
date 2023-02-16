@@ -2,13 +2,14 @@ package ru.practicum.mainservice.event.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import ru.practicum.mainservice.event.model.AdminEventState;
 import ru.practicum.mainservice.event.model.Location;
 import ru.practicum.mainservice.event.model.UpdateEventUserState;
 
 import java.time.LocalDateTime;
 
 @Data
-public class UpdateEventUserRequest {
+public class UpdateEventAdminRequest {
     private String annotation;
     private Long category;
     private String description;
@@ -18,6 +19,6 @@ public class UpdateEventUserRequest {
     private Boolean paid;
     private Integer participantLimit;
     private Boolean requestModeration;
-    private UpdateEventUserState stateAction;
+    private AdminEventState stateAction;
     private String title;
 }
