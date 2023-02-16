@@ -10,7 +10,6 @@ public class EventUpdater {
 
     public static Event updateEventAnnotation(Event event, UtilityEvent utilityEvent) {
         String annotation = utilityEvent.getAnnotation();
-        Long categoryId = utilityEvent.getCategory();
         String description = utilityEvent.getDescription();
         LocalDateTime eventDate = utilityEvent.getEventDate();
         Location location = utilityEvent.getLocation();

@@ -25,7 +25,7 @@ public class CategoryController {
     public ResponseEntity<Collection<CategoryDto>> getAllCategories(
             @RequestParam(defaultValue = "0", required = false) @PositiveOrZero Integer from,
             @RequestParam(defaultValue = "10", required = false) @Positive Integer size) {
-        log.info("GET-request was received at '/categories' . Get all categories.");
+        log.info("GET-request was received at '/categories?from={}&size={}' . Get all categories.", from, size);
         return new ResponseEntity<>(categoryService.getAllCategories(from, size),
                 HttpStatus.OK);
     }

@@ -1,13 +1,11 @@
 package ru.practicum.mainservice.event.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.mainservice.category.model.Category;
 import ru.practicum.mainservice.category.repository.CategoryRepository;
-import ru.practicum.mainservice.event.dto.EventFullDto;
-import ru.practicum.mainservice.event.dto.NewEventDto;
-import ru.practicum.mainservice.event.dto.UpdateEventAdminRequest;
-import ru.practicum.mainservice.event.dto.UpdateEventUserRequest;
+import ru.practicum.mainservice.event.dto.*;
 import ru.practicum.mainservice.event.mapper.EventMapper;
 import ru.practicum.mainservice.event.model.AdminEventState;
 import ru.practicum.mainservice.event.model.Event;
@@ -22,6 +20,8 @@ import ru.practicum.mainservice.user.model.User;
 import ru.practicum.mainservice.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,9 +61,22 @@ public class EventService {
         return eventMapper.toFullEventDto(eventRepository.save(newEvent));
     }
 
-    public EventFullDto getEventById(Long eventId, Long userId) {
+    public EventFullDto getPrivateEventById(Long eventId, Long userId) {
         findUser(userId);
         return eventMapper.toFullEventDto(findEvent(eventId));
+    }
+
+    public EventFullDto getPublicEventById(Long eventId) {
+        Event event = findEvent(eventId);
+        return eventMapper.toFullEventDto(event);
+    }
+
+    public Collection<EventShortDto> getAllUserEvents(Long unitiatorId, Integer from, Integer size) {
+        findUser(unitiatorId);
+        PageRequest pageRequest = PageRequest.of(from, size);
+        return eventRepository.findAllByInitiator_Id(unitiatorId, pageRequest).stream()
+                .map(eventMapper::toShortEventDto)
+                .collect(Collectors.toList());
     }
 
     public EventFullDto updateEventByUser(Long eventId, Long userId, UpdateEventUserRequest updateEventUserRequest) {
@@ -140,6 +153,5 @@ public class EventService {
             throw new InvalidIdException("Category", catId, LocalDateTime.now());
         });
     }
-
 
 }
