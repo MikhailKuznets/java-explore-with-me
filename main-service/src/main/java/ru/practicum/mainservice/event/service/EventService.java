@@ -9,8 +9,12 @@ import ru.practicum.mainservice.event.dto.NewEventDto;
 import ru.practicum.mainservice.event.dto.UpdateEventAdminRequest;
 import ru.practicum.mainservice.event.dto.UpdateEventUserRequest;
 import ru.practicum.mainservice.event.mapper.EventMapper;
-import ru.practicum.mainservice.event.model.*;
+import ru.practicum.mainservice.event.model.AdminEventState;
+import ru.practicum.mainservice.event.model.Event;
+import ru.practicum.mainservice.event.model.EventState;
 import ru.practicum.mainservice.event.repository.EventRepository;
+import ru.practicum.mainservice.event.updater.EventUpdater;
+import ru.practicum.mainservice.event.updater.UtilityEvent;
 import ru.practicum.mainservice.event.validation.EventValidator;
 import ru.practicum.mainservice.exception.InvalidIdException;
 import ru.practicum.mainservice.exception.NonUpdatedEventException;
@@ -73,8 +77,9 @@ public class EventService {
         }
 
         UtilityEvent utilityEvent = eventMapper.toUtilityEventClass(updateEventUserRequest);
-        Event updatedEvent = updateEventAnnotation(selectedEvent, utilityEvent);
+        Event updatedEvent = EventUpdater.updateEventAnnotation(selectedEvent, utilityEvent);
         updatedEvent.setState(EventState.CANCELED);
+        updatedEvent = updateEventCategory(updatedEvent, utilityEvent.getCategory());
         return eventMapper.toFullEventDto(eventRepository.save(updatedEvent));
     }
 
@@ -104,53 +109,15 @@ public class EventService {
         }
 
         UtilityEvent utilityEvent = eventMapper.toUtilityEventClass(updateEventAdminRequest);
-        Event updatedEvent = updateEventAnnotation(selectedEvent, utilityEvent);
+        Event updatedEvent = EventUpdater.updateEventAnnotation(selectedEvent, utilityEvent);
+        updatedEvent = updateEventCategory(updatedEvent, utilityEvent.getCategory());
         return eventMapper.toFullEventDto(eventRepository.save(updatedEvent));
     }
 
-    // Обновление полей класса Event при PATCH-запросах
-    private Event updateEventAnnotation(Event event, UtilityEvent utilityEvent) {
-        String annotation = utilityEvent.getAnnotation();
-        Long categoryId = utilityEvent.getCategory();
-        String description = utilityEvent.getDescription();
-        LocalDateTime eventDate = utilityEvent.getEventDate();
-        Location location = utilityEvent.getLocation();
-        Boolean paid = utilityEvent.getPaid();
-        Integer participantLimit = utilityEvent.getParticipantLimit();
-        Boolean requestModeration = utilityEvent.getRequestModeration();
-        String title = utilityEvent.getTitle();
-
-        if (annotation != null) {
-            EventValidator.validateAnnotation(annotation);
-            event.setAnnotation(annotation);
-        }
-        if (categoryId != null) {
-            Category category = findCategory(categoryId);
-            event.setCategory(category);
-        }
-        if (description != null) {
-            EventValidator.validateDescription(description);
-            event.setDescription(description);
-        }
-        if (eventDate != null) {
-            EventValidator.validatePatchEventDate(eventDate);
-            event.setEventDate(eventDate);
-        }
-        if (location != null) {
-            event.setLocation(location);
-        }
-        if (paid != null) {
-            event.setPaid(paid);
-        }
-        if (participantLimit != null) {
-            event.setParticipantLimit(participantLimit);
-        }
-        if (requestModeration != null) {
-            event.setRequestModeration(requestModeration);
-        }
-        if (title != null) {
-            EventValidator.validateTitle(title);
-            event.setTitle(title);
+    private Event updateEventCategory(Event event, Long newCatId) {
+        if (newCatId != null) {
+            Category newCategory = findCategory(newCatId);
+            event.setCategory(newCategory);
         }
         return event;
     }

@@ -8,7 +8,7 @@ import ru.practicum.mainservice.event.dto.NewEventDto;
 import ru.practicum.mainservice.event.dto.UpdateEventAdminRequest;
 import ru.practicum.mainservice.event.dto.UpdateEventUserRequest;
 import ru.practicum.mainservice.event.model.Event;
-import ru.practicum.mainservice.event.model.UtilityEvent;
+import ru.practicum.mainservice.event.updater.UtilityEvent;
 
 @Mapper(componentModel = "spring")
 public interface EventMapper {

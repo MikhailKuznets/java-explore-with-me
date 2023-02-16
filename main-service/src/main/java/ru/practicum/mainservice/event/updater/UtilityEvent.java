@@ -1,7 +1,8 @@
-package ru.practicum.mainservice.event.model;
+package ru.practicum.mainservice.event.updater;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import ru.practicum.mainservice.event.model.Location;
 
 import java.time.LocalDateTime;
 
