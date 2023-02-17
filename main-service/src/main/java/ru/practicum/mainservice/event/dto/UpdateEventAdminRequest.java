@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import ru.practicum.mainservice.event.model.AdminEventState;
 import ru.practicum.mainservice.event.model.Location;
-import ru.practicum.mainservice.event.model.UpdateEventUserState;
 
 import java.time.LocalDateTime;
 

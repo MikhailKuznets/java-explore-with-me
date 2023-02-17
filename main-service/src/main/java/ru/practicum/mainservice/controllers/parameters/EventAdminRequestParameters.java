@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class EventAdminRequestParameters {
     private List<Long> userIds;
-    private EventState state;
+    private List<EventState> states;
     private List<Long> catIds;
     private LocalDateTime rangeStart;
     private LocalDateTime rangeEnd;

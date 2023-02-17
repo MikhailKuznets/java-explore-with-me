@@ -27,7 +27,7 @@ public class UserService {
         return userMapper.toUserDto(userRepository.save(newUser));
     }
 
-    public Collection<UserDto> getUsers(int[] ids, Integer from, Integer size) {
+    public Collection<UserDto> getUsers(long[] ids, Integer from, Integer size) {
         PageRequest pageRequest = PageRequest.of(from, size);
 
         if (ids.length == 0) {
@@ -37,7 +37,6 @@ public class UserService {
         }
 
         List<Long> longIds = Arrays.stream(ids)
-                .mapToLong(num -> (long) num)
                 .boxed()
                 .collect(Collectors.toList());
 

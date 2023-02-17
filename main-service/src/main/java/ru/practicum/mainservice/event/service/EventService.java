@@ -1,16 +1,20 @@
 package ru.practicum.mainservice.event.service;
 
+import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.mainservice.category.model.Category;
 import ru.practicum.mainservice.category.repository.CategoryRepository;
+import ru.practicum.mainservice.controllers.parameters.EventAdminRequestParameters;
 import ru.practicum.mainservice.controllers.parameters.EventPublicRequestParameters;
 import ru.practicum.mainservice.event.dto.*;
 import ru.practicum.mainservice.event.mapper.EventMapper;
 import ru.practicum.mainservice.event.model.AdminEventState;
 import ru.practicum.mainservice.event.model.Event;
 import ru.practicum.mainservice.event.model.EventState;
+import ru.practicum.mainservice.event.model.QEvent;
 import ru.practicum.mainservice.event.repository.EventRepository;
 import ru.practicum.mainservice.event.updater.EventUpdater;
 import ru.practicum.mainservice.event.updater.UtilityEvent;
@@ -22,6 +26,7 @@ import ru.practicum.mainservice.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,6 +53,7 @@ public class EventService {
         newEvent.setInitiator(initiator);
         newEvent.setCategory(category);
         newEvent.setState(EventState.PENDING);
+        newEvent.setConfirmedRequests(0);
 
         if (newEventDto.getPaid() == null) {
             newEvent.setPaid(false);
@@ -77,12 +83,77 @@ public class EventService {
             Integer from, Integer size) {
 
         eventPublicRequestParameters.checkTime();
+
         PageRequest pageRequest = PageRequest.of(from, size);
 
+        BooleanBuilder predicate = getPublicPredicate(eventPublicRequestParameters);
+        Page<Event> events = eventRepository.findAll(predicate, pageRequest);
+        return events.stream()
+                .map(eventMapper::toShortEventDto)
+                .collect(Collectors.toList());
+    }
 
+    private BooleanBuilder getPublicPredicate(EventPublicRequestParameters parameters) {
+        BooleanBuilder predicate = new BooleanBuilder();
 
+        String text = parameters.getText();
+        List<Long> catIds = parameters.getCatIds();
+        Boolean paid = parameters.getPaid();
+        LocalDateTime rangeStart = parameters.getRangeStart();
+        LocalDateTime rangeEnd = parameters.getRangeEnd();
+        Boolean onlyAvailable = parameters.getOnlyAvailable();
+
+        if (text != null) {
+            predicate.and(QEvent.event.annotation.likeIgnoreCase(text)
+                    .or(QEvent.event.description.likeIgnoreCase(text)));
+        }
+        if (catIds != null) {
+            predicate.and(QEvent.event.category.id.in(catIds));
+        }
+        if (paid != null) {
+            predicate.and(QEvent.event.paid.eq(paid));
+        }
+        predicate.and(QEvent.event.eventDate.after(rangeStart));
+        predicate.and(QEvent.event.eventDate.before(rangeEnd));
+        if (!onlyAvailable)
+            predicate.and(QEvent.event.participantLimit.eq(0)
+                    .or(QEvent.event.participantLimit.lt(QEvent.event.confirmedRequests)));
+        return predicate;
+    }
+
+    public Collection<EventFullDto> getAdminEventsWithParameters(
+            EventAdminRequestParameters parameters, Integer from, Integer size) {
         return null;
     }
+
+    private BooleanBuilder getAdminPredicate(EventPublicRequestParameters parameters) {
+        BooleanBuilder predicate = new BooleanBuilder();
+
+        String text = parameters.getText();
+        List<Long> catIds = parameters.getCatIds();
+        Boolean paid = parameters.getPaid();
+        LocalDateTime rangeStart = parameters.getRangeStart();
+        LocalDateTime rangeEnd = parameters.getRangeEnd();
+        Boolean onlyAvailable = parameters.getOnlyAvailable();
+
+        if (text != null) {
+            predicate.and(QEvent.event.annotation.likeIgnoreCase(text)
+                    .or(QEvent.event.description.likeIgnoreCase(text)));
+        }
+        if (catIds != null) {
+            predicate.and(QEvent.event.category.id.in(catIds));
+        }
+        if (paid != null) {
+            predicate.and(QEvent.event.paid.eq(paid));
+        }
+        predicate.and(QEvent.event.eventDate.after(rangeStart));
+        predicate.and(QEvent.event.eventDate.before(rangeEnd));
+        if (!onlyAvailable)
+            predicate.and(QEvent.event.participantLimit.eq(0)
+                    .or(QEvent.event.participantLimit.lt(QEvent.event.confirmedRequests)));
+        return predicate;
+    }
+
 
     public Collection<EventShortDto> getAllUserEvents(Long unitiatorId, Integer from, Integer size) {
         findUser(unitiatorId);
@@ -119,16 +190,14 @@ public class EventService {
             case PUBLISH_EVENT:
                 if (!state.equals(EventState.PENDING)) {
                     throw new NonUpdatedEventException("Cannot publish the event because " +
-                            "it's not in the right state: " + state
-                            , LocalDateTime.now());
+                            "it's not in the right state: " + state, LocalDateTime.now());
                 }
                 selectedEvent.setState(EventState.PUBLISHED);
                 break;
             case REJECT_EVENT:
                 if (selectedEvent.getState().equals(EventState.PUBLISHED)) {
                     throw new NonUpdatedEventException("Cannot reject the event because " +
-                            "it's not in the right state: " + state
-                            , LocalDateTime.now());
+                            "it's not in the right state: " + state, LocalDateTime.now());
                 }
                 selectedEvent.setState(EventState.CANCELED);
                 break;
@@ -137,6 +206,8 @@ public class EventService {
         UtilityEvent utilityEvent = eventMapper.toUtilityEventClass(updateEventAdminRequest);
         Event updatedEvent = EventUpdater.updateEventAnnotation(selectedEvent, utilityEvent);
         updatedEvent = updateEventCategory(updatedEvent, utilityEvent.getCategory());
+        updatedEvent.setPublishedOn(LocalDateTime.now());
+
         return eventMapper.toFullEventDto(eventRepository.save(updatedEvent));
     }
 

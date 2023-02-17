@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.mainservice.category.dto.CategoryDto;
+import ru.practicum.mainservice.category.service.CategoryService;
 import ru.practicum.mainservice.controllers.parameters.EventPublicRequestParameters;
 import ru.practicum.mainservice.controllers.parameters.EventRequestSort;
 import ru.practicum.mainservice.event.dto.EventFullDto;
@@ -25,7 +27,26 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class PublicController {
+    private final CategoryService categoryService;
     private final EventService eventService;
+
+    //  CATEGORIES
+    @GetMapping("/categories")
+    public ResponseEntity<Collection<CategoryDto>> getAllCategories(
+            @RequestParam(defaultValue = "0", required = false) @PositiveOrZero Integer from,
+            @RequestParam(defaultValue = "10", required = false) @Positive Integer size) {
+        log.info("GET-request was received at '/categories?from={}&size={}' . Get all categories.", from, size);
+        return new ResponseEntity<>(categoryService.getAllCategories(from, size),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/categories/{catId}")
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable @Positive Long catId) {
+        log.info("GET-request was received at '/categories/{}' . Get category by category ID = {}.", catId, catId);
+        return new ResponseEntity<>(categoryService.getCategoryById(catId),
+                HttpStatus.OK);
+    }
+
 
     // EVENTS
     @GetMapping("/events")

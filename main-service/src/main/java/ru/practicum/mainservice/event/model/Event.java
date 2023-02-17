@@ -23,7 +23,8 @@ public class Event {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-//    confirmedRequests
+    @Column(name = "confirmed_requests", nullable = false)
+    private Integer confirmedRequests;
 
     @Column(name = "created", nullable = false)
     private LocalDateTime createdOn;
@@ -50,7 +51,8 @@ public class Event {
     @Column(name = "participant_limit", nullable = false)
     private Integer participantLimit;
 
-//    publishedOn
+    @Column(name = "published")
+    private LocalDateTime publishedOn;
 
     @Column(name = "request_moderation", nullable = false)
     private Boolean requestModeration;
