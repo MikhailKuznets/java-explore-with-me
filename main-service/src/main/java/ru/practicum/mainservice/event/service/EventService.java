@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.mainservice.category.model.Category;
 import ru.practicum.mainservice.category.repository.CategoryRepository;
+import ru.practicum.mainservice.controllers.parameters.EventPublicRequestParameters;
 import ru.practicum.mainservice.event.dto.*;
 import ru.practicum.mainservice.event.mapper.EventMapper;
 import ru.practicum.mainservice.event.model.AdminEventState;
@@ -69,6 +70,18 @@ public class EventService {
     public EventFullDto getPublicEventById(Long eventId) {
         Event event = findEvent(eventId);
         return eventMapper.toFullEventDto(event);
+    }
+
+    public Collection<EventShortDto> getPublicEventsWithParameters(
+            EventPublicRequestParameters eventPublicRequestParameters,
+            Integer from, Integer size) {
+
+        eventPublicRequestParameters.checkTime();
+        PageRequest pageRequest = PageRequest.of(from, size);
+
+
+
+        return null;
     }
 
     public Collection<EventShortDto> getAllUserEvents(Long unitiatorId, Integer from, Integer size) {
