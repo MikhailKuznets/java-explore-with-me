@@ -9,9 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainservice.category.dto.CategoryDto;
 import ru.practicum.mainservice.category.dto.NewCategoryDto;
 import ru.practicum.mainservice.category.service.CategoryService;
+import ru.practicum.mainservice.compilation.dto.CompilationDto;
+import ru.practicum.mainservice.compilation.dto.NewCompilationDto;
+import ru.practicum.mainservice.compilation.service.CompilationService;
 import ru.practicum.mainservice.controllers.parameters.EventAdminRequestParameters;
 import ru.practicum.mainservice.event.dto.EventFullDto;
 import ru.practicum.mainservice.event.dto.UpdateEventAdminRequest;
+import ru.practicum.mainservice.event.model.EventState;
 import ru.practicum.mainservice.event.service.EventService;
 import ru.practicum.mainservice.user.dto.NewUserRequest;
 import ru.practicum.mainservice.user.dto.UserDto;
@@ -22,7 +26,6 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -34,6 +37,7 @@ public class AdminController {
     private final UserService userService;
     private final CategoryService categoryService;
     private final EventService eventService;
+    private final CompilationService compilationService;
 
     //    Обработка admin/categories
     @PostMapping("/categories")
@@ -77,31 +81,27 @@ public class AdminController {
 
     @GetMapping("/events")
     public ResponseEntity<Collection<EventFullDto>> getAdminAllEvents(
-            @RequestParam(defaultValue = "[]",required = false) Long[] userIds,
-            @RequestParam(required = false) String states,
-            @RequestParam(required = false) String catIds,
+            @RequestParam(defaultValue = "", required = false) List<Long> userIds,
+            @RequestParam(defaultValue = "", required = false) List<EventState> states,
+            @RequestParam(defaultValue = "", required = false) List<Long> catIds,
             @RequestParam(required = false) LocalDateTime rangeStart,
             @RequestParam(required = false) LocalDateTime rangeEnd,
             @RequestParam(defaultValue = "0", required = false) @PositiveOrZero Integer from,
             @RequestParam(defaultValue = "10", required = false) @Positive Integer size) {
 
         EventAdminRequestParameters parameters = EventAdminRequestParameters.builder()
-                .userIds(Collections.EMPTY_LIST)
-                .states(Collections.EMPTY_LIST)
-                .catIds(Collections.EMPTY_LIST)
+                .userIds(userIds)
+                .states(states)
+                .catIds(catIds)
                 .rangeStart(rangeStart)
                 .rangeEnd(rangeEnd)
                 .build();
-
-        log.error(userIds.toString());
-        log.error(states);
-        log.error(catIds);
 
         log.info("GET-request was received at '/events' . " +
                 "GET all events with search parameters  = {}.", parameters);
 
 
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(eventService.getAdminEventsWithParameters(parameters, from, size), HttpStatus.OK);
     }
 
 
@@ -115,7 +115,7 @@ public class AdminController {
 
     @GetMapping("/users")
     public ResponseEntity<Collection<UserDto>> getUsers(
-            @RequestParam(defaultValue = "[]", required = false) long[] ids,
+            @RequestParam(defaultValue = "", required = false) long[] ids,
             @RequestParam(defaultValue = "0", required = false) @PositiveOrZero Integer from,
             @RequestParam(defaultValue = "10", required = false) @Positive Integer size
     ) {
@@ -133,7 +133,13 @@ public class AdminController {
     }
 
 
-//    Обработка admin/compilations
+    //    Обработка admin/compilations
+    @PostMapping("/compilations")
+    public ResponseEntity<CompilationDto> createCategory(@RequestBody @Valid NewCompilationDto newCompilationDto) {
+        log.info("POST-request was received at 'admin/compilations' . " +
+                "Create a COMPILATION: {}.", newCompilationDto);
+        return new ResponseEntity<>(compilationService.createCompilation(newCompilationDto), HttpStatus.CREATED);
+    }
 
 
 }

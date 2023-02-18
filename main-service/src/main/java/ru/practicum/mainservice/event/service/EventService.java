@@ -38,8 +38,6 @@ public class EventService {
     private final EventMapper eventMapper;
 
     public EventFullDto createEvent(NewEventDto newEventDto, Long userId) {
-        LocalDateTime createdTime = LocalDateTime.now().withNano(0);
-
         // Валидация
         EventValidator.validateNewEventDto(newEventDto);
         User initiator = findUser(userId);
@@ -49,22 +47,8 @@ public class EventService {
         Event newEvent = eventMapper.toEvent(newEventDto);
 
         // Установка значений полей Event
-        newEvent.setCreatedOn(createdTime);
         newEvent.setInitiator(initiator);
         newEvent.setCategory(category);
-        newEvent.setState(EventState.PENDING);
-        newEvent.setConfirmedRequests(0);
-
-        if (newEventDto.getPaid() == null) {
-            newEvent.setPaid(false);
-        }
-        if (newEventDto.getParticipantLimit() == null) {
-            newEvent.setParticipantLimit(0);
-        }
-        if (newEventDto.getRequestModeration() == null) {
-            newEvent.setRequestModeration(true);
-        }
-
         return eventMapper.toFullEventDto(eventRepository.save(newEvent));
     }
 
@@ -79,14 +63,14 @@ public class EventService {
     }
 
     public Collection<EventShortDto> getPublicEventsWithParameters(
-            EventPublicRequestParameters eventPublicRequestParameters,
+            EventPublicRequestParameters parameters,
             Integer from, Integer size) {
 
-        eventPublicRequestParameters.checkTime();
+        parameters.checkTime();
 
         PageRequest pageRequest = PageRequest.of(from, size);
 
-        BooleanBuilder predicate = getPublicPredicate(eventPublicRequestParameters);
+        BooleanBuilder predicate = getPublicPredicate(parameters);
         Page<Event> events = eventRepository.findAll(predicate, pageRequest);
         return events.stream()
                 .map(eventMapper::toShortEventDto)
@@ -121,36 +105,37 @@ public class EventService {
         return predicate;
     }
 
-    public Collection<EventFullDto> getAdminEventsWithParameters(
-            EventAdminRequestParameters parameters, Integer from, Integer size) {
-        return null;
+    public Collection<EventFullDto> getAdminEventsWithParameters(EventAdminRequestParameters parameters,
+                                                                 Integer from, Integer size) {
+        PageRequest pageRequest = PageRequest.of(from, size);
+
+        BooleanBuilder predicate = getAdminPredicate(parameters);
+        Page<Event> events = eventRepository.findAll(predicate, pageRequest);
+        return events.stream()
+                .map(eventMapper::toFullEventDto)
+                .collect(Collectors.toList());
     }
 
-    private BooleanBuilder getAdminPredicate(EventPublicRequestParameters parameters) {
+    private BooleanBuilder getAdminPredicate(EventAdminRequestParameters parameters) {
         BooleanBuilder predicate = new BooleanBuilder();
 
-        String text = parameters.getText();
+        List<Long> userIds = parameters.getCatIds();
+        List<EventState> states = parameters.getStates();
         List<Long> catIds = parameters.getCatIds();
-        Boolean paid = parameters.getPaid();
         LocalDateTime rangeStart = parameters.getRangeStart();
         LocalDateTime rangeEnd = parameters.getRangeEnd();
-        Boolean onlyAvailable = parameters.getOnlyAvailable();
 
-        if (text != null) {
-            predicate.and(QEvent.event.annotation.likeIgnoreCase(text)
-                    .or(QEvent.event.description.likeIgnoreCase(text)));
+        if (!userIds.isEmpty()) {
+            predicate.and(QEvent.event.initiator.id.in(userIds));
         }
-        if (catIds != null) {
+        if (!states.isEmpty()) {
+            predicate.and(QEvent.event.state.in(states));
+        }
+        if (!catIds.isEmpty()) {
             predicate.and(QEvent.event.category.id.in(catIds));
-        }
-        if (paid != null) {
-            predicate.and(QEvent.event.paid.eq(paid));
         }
         predicate.and(QEvent.event.eventDate.after(rangeStart));
         predicate.and(QEvent.event.eventDate.before(rangeEnd));
-        if (!onlyAvailable)
-            predicate.and(QEvent.event.participantLimit.eq(0)
-                    .or(QEvent.event.participantLimit.lt(QEvent.event.confirmedRequests)));
         return predicate;
     }
 
