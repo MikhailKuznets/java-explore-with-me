@@ -6,10 +6,14 @@ import ru.practicum.mainservice.event.model.Event;
 import ru.practicum.mainservice.event.model.EventState;
 import ru.practicum.mainservice.event.repository.EventRepository;
 import ru.practicum.mainservice.exception.InvalidIdException;
+import ru.practicum.mainservice.exception.NonCanceledRequestException;
+import ru.practicum.mainservice.exception.ParticipantLimitException;
 import ru.practicum.mainservice.exception.UnCreatedRequestException;
+import ru.practicum.mainservice.request.dto.EventRequestStatusUpdateRequest;
+import ru.practicum.mainservice.request.dto.EventRequestStatusUpdateResult;
 import ru.practicum.mainservice.request.dto.ParticipationRequestDto;
 import ru.practicum.mainservice.request.mapper.RequestMapper;
-import ru.practicum.mainservice.request.model.Request;
+import ru.practicum.mainservice.request.model.ParticipationRequest;
 import ru.practicum.mainservice.request.model.RequestStatus;
 import ru.practicum.mainservice.request.repository.RequestRepository;
 import ru.practicum.mainservice.user.model.User;
@@ -17,6 +21,8 @@ import ru.practicum.mainservice.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,10 +34,22 @@ class RequestService {
     private final RequestMapper requestMapper;
 
     public Collection<ParticipationRequestDto> getUserRequests(Long requesterId) {
-        User requester = findUser(requesterId);
-
-        return null;
+        findUser(requesterId);
+        Collection<ParticipationRequest> requests = requestRepository.findAllByRequester_Id(requesterId);
+        return requests.stream()
+                .map(requestMapper::toRequestDto)
+                .collect(Collectors.toList());
     }
+
+    public Collection<ParticipationRequestDto> getRequestsForInitiator(Long eventId, Long userId) {
+        findUser(userId);
+        findEvent(eventId);
+        Collection<ParticipationRequest> requests = requestRepository.findAllByRequester_IdAndEvent_Id(userId, eventId);
+        return requests.stream()
+                .map(requestMapper::toRequestDto)
+                .collect(Collectors.toList());
+    }
+
 
     public ParticipationRequestDto createRequest(Long userId, Long eventId) {
         User requester = findUser(userId);
@@ -53,7 +71,7 @@ class RequestService {
             throw new UnCreatedRequestException("You cannot participate in an unpublished event", LocalDateTime.now());
         }
 
-        Request request = Request.builder()
+        ParticipationRequest participationRequest = ParticipationRequest.builder()
                 .created(LocalDateTime.now())
                 .event(event)
                 .requester(requester)
@@ -62,18 +80,45 @@ class RequestService {
 
         // Проверка пре-модерации и изменение confirmedRequests
         if (!event.getRequestModeration()) {
-            request.setStatus(RequestStatus.CONFIRMED);
+            participationRequest.setStatus(RequestStatus.CONFIRMED);
             event.setConfirmedRequests(confirmedRequests++);
             eventRepository.save(event);
         }
 
-        return requestMapper.toRequestDto(requestRepository.save(request));
+        return requestMapper.toRequestDto(requestRepository.save(participationRequest));
     }
 
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
-        User requester = findUser(userId);
+        User user = findUser(userId);
+        ParticipationRequest request = findRequest(requestId);
+        if (!request.getRequester().equals(user)) {
+            throw new NonCanceledRequestException("It is not possible to cancel another user's request",
+                    LocalDateTime.now());
+        }
+        if (request.getStatus().equals(RequestStatus.CANCELED)) {
+            throw new NonCanceledRequestException("The request has already been canceled",
+                    LocalDateTime.now());
+        }
+        request.setStatus(RequestStatus.CANCELED);
+        return requestMapper.toRequestDto(requestRepository.save(request));
+    }
 
+    public EventRequestStatusUpdateResult updateRequestStatus(Long eventId, Long userId,
+                                                              EventRequestStatusUpdateRequest request) {
+        Event event = findEvent(eventId);
+        User user = findUser(userId);
+        List<Long> requestIds = request.getRequestIds();
+        requestIds.forEach(this::findRequest);
+
+        Integer confirmedRequests = event.getConfirmedRequests();
+        Integer participantLimit = event.getParticipantLimit();
+        if (participantLimit != 0 && (participantLimit <= confirmedRequests)) {
+            throw new ParticipantLimitException("The participant limit has been reached", LocalDateTime.now());
+        }
+
+        Collection<ParticipationRequest> requests = requestRepository.findByIdIn(requestIds);
         return null;
+
     }
 
 
@@ -90,7 +135,7 @@ class RequestService {
         });
     }
 
-    private Request findRequest(Long requestId) {
+    private ParticipationRequest findRequest(Long requestId) {
         return requestRepository.findById(requestId).orElseThrow(() -> {
             throw new InvalidIdException("Request", requestId, LocalDateTime.now());
         });

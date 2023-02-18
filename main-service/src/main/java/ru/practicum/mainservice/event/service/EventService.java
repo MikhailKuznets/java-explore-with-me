@@ -222,5 +222,4 @@ public class EventService {
             throw new InvalidIdException("Category", catId, LocalDateTime.now());
         });
     }
-
 }

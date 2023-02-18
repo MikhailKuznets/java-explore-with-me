@@ -11,6 +11,8 @@ import ru.practicum.mainservice.event.dto.EventShortDto;
 import ru.practicum.mainservice.event.dto.NewEventDto;
 import ru.practicum.mainservice.event.dto.UpdateEventUserRequest;
 import ru.practicum.mainservice.event.service.EventService;
+import ru.practicum.mainservice.request.dto.EventRequestStatusUpdateRequest;
+import ru.practicum.mainservice.request.dto.EventRequestStatusUpdateResult;
 import ru.practicum.mainservice.request.dto.ParticipationRequestDto;
 import ru.practicum.mainservice.request.service.RequestService;
 
@@ -66,15 +68,36 @@ public class PrivateController {
                 HttpStatus.OK);
     }
 
+    @GetMapping("/{userId}/events/{eventId}/requests")
+    public ResponseEntity<Collection<ParticipationRequestDto>> getRequestsForInitiator(
+            @PathVariable @Positive Long userId,
+            @PathVariable @Positive Long eventId) {
+        log.info("GET-request was received at 'users/{}/events/{}/requests' . " +
+                "Get a list of REQUESTS to participate in an EVENT with eventId = {}" +
+                "created by USER with userId = {}.", userId, eventId, eventId, userId);
+        return new ResponseEntity<>(requestService.getRequestsForInitiator(eventId, userId), HttpStatus.OK);
+    }
+
+    @PatchMapping("/{userId}/events/{eventId}/requests")
+    public ResponseEntity<EventRequestStatusUpdateResult> updateRequestStatus(
+            @PathVariable @Positive Long userId,
+            @PathVariable @Positive Long eventId,
+            @RequestBody EventRequestStatusUpdateRequest request) {
+        log.info("PATCH-request was received at 'users/{}/events/{}/requests' . " +
+                "Get a list of REQUESTS to participate in an EVENT with eventId = {}" +
+                "created by USER with userId = {}.", userId, eventId, eventId, userId);
+        return new ResponseEntity<>(requestService.updateRequestStatus(eventId, userId, request),
+                HttpStatus.OK);
+    }
 
     // REQUESTS
 
     @GetMapping("/{userId}/requests")
     public ResponseEntity<Collection<ParticipationRequestDto>> getUserRequests(
-            @PathVariable @Positive Long requesterId) {
+            @PathVariable @Positive Long userId) {
         log.info("GET-request was received at 'users/{}/requests' . " +
-                "Get all request by USER with userId = {}.", requesterId, requesterId);
-        return new ResponseEntity<>(requestService.getUserRequests(requesterId), HttpStatus.OK);
+                "Get all request by USER with userId = {}.", userId, userId);
+        return new ResponseEntity<>(requestService.getUserRequests(userId), HttpStatus.OK);
     }
 
     @PostMapping("/{userId}/requests")
@@ -92,7 +115,7 @@ public class PrivateController {
         log.info("PATCH-request was received at 'users/{}/requests/{}/cancel' . " +
                         "The USER with userId = {} cancels the REQUEST with requestId = {} to participate in the EVENT",
                 userId, requestId, userId, requestId);
-        return new ResponseEntity<>(requestService.cancelRequest(userId, requestId), HttpStatus.CREATED);
+        return new ResponseEntity<>(requestService.cancelRequest(userId, requestId), HttpStatus.OK);
     }
 
 }
