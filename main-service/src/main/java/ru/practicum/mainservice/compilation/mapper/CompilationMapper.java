@@ -18,6 +18,9 @@ public interface CompilationMapper {
         }
         Boolean pinned = newCompilationDto.getPinned();
         String title = newCompilationDto.getTitle();
+        if (pinned == null) {
+            pinned = false;
+        }
 
         Compilation compilation = Compilation.builder()
                 .pinned(pinned)
@@ -25,4 +28,5 @@ public interface CompilationMapper {
                 .build();
         return compilation;
     }
+
 }

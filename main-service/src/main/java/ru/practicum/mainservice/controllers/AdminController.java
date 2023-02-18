@@ -11,6 +11,7 @@ import ru.practicum.mainservice.category.dto.NewCategoryDto;
 import ru.practicum.mainservice.category.service.CategoryService;
 import ru.practicum.mainservice.compilation.dto.CompilationDto;
 import ru.practicum.mainservice.compilation.dto.NewCompilationDto;
+import ru.practicum.mainservice.compilation.dto.UpdateCompilationRequest;
 import ru.practicum.mainservice.compilation.service.CompilationService;
 import ru.practicum.mainservice.controllers.parameters.EventAdminRequestParameters;
 import ru.practicum.mainservice.event.dto.EventFullDto;
@@ -41,7 +42,7 @@ public class AdminController {
 
     //    Обработка admin/categories
     @PostMapping("/categories")
-    public ResponseEntity<CategoryDto> createCategory(@RequestBody @Valid NewCategoryDto newCategoryDto) {
+    public ResponseEntity<CategoryDto> createCompilation(@RequestBody @Valid NewCategoryDto newCategoryDto) {
         log.info("POST-request was received at 'admin/categories' . " +
                 "Create a CATEGORY: {}.", newCategoryDto);
         return new ResponseEntity<>(categoryService.createCategory(newCategoryDto), HttpStatus.CREATED);
@@ -125,7 +126,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/users/{userId}")
-    public ResponseEntity<Void> deleteUserById(@PathVariable Long userId) {
+    public ResponseEntity<Void> deleteUserById(@PathVariable @Positive Long userId) {
         log.info("DELETE-request was received at 'admin/users/{}' . " +
                 "Delete a USER with UserID = {}.", userId, userId);
         userService.deleteUserById(userId);
@@ -135,10 +136,28 @@ public class AdminController {
 
     //    Обработка admin/compilations
     @PostMapping("/compilations")
-    public ResponseEntity<CompilationDto> createCategory(@RequestBody @Valid NewCompilationDto newCompilationDto) {
+    public ResponseEntity<CompilationDto> createCompilation(@RequestBody @Valid NewCompilationDto newCompilationDto) {
         log.info("POST-request was received at 'admin/compilations' . " +
                 "Create a COMPILATION: {}.", newCompilationDto);
         return new ResponseEntity<>(compilationService.createCompilation(newCompilationDto), HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/compilations/{compId}")
+    public ResponseEntity<CompilationDto> updateCompilation(
+            @PathVariable @Positive Long compId,
+            @RequestBody UpdateCompilationRequest updateCompilationDto) {
+        log.info("PATCH-request was received at 'admin/compilations/{}' . " +
+                "Update the COMPILATION with compId = {}. New DATA: {}.", compId, compId, updateCompilationDto);
+        return new ResponseEntity<>(compilationService.updateCompilation(compId, updateCompilationDto),
+                HttpStatus.OK);
+    }
+
+    @DeleteMapping("/compilations/{compId}")
+    public ResponseEntity<Void> deleteCompilation(@PathVariable @Positive Long compId) {
+        log.info("DELETE-request was received at 'admin/compilations/{}' . " +
+                "Delete a COMPILATION with compId = {}.", compId, compId);
+        compilationService.deleteCompilationById(compId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 

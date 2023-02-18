@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.mainservice.category.dto.CategoryDto;
 import ru.practicum.mainservice.category.service.CategoryService;
+import ru.practicum.mainservice.compilation.dto.CompilationDto;
+import ru.practicum.mainservice.compilation.service.CompilationService;
 import ru.practicum.mainservice.controllers.parameters.EventPublicRequestParameters;
 import ru.practicum.mainservice.controllers.parameters.EventRequestSort;
 import ru.practicum.mainservice.event.dto.EventFullDto;
@@ -29,6 +31,7 @@ import java.util.List;
 public class PublicController {
     private final CategoryService categoryService;
     private final EventService eventService;
+    private final CompilationService compilationService;
 
     //  CATEGORIES
     @GetMapping("/categories")
@@ -84,5 +87,23 @@ public class PublicController {
         log.info("GET-request was received at '/events/{}' . " +
                 "Get public information about the event with eventId = {}.", eventId, eventId);
         return new ResponseEntity<>(eventService.getPublicEventById(eventId), HttpStatus.OK);
+    }
+
+    // COMPILATIONS
+
+    @GetMapping("/compilations")
+    public ResponseEntity<Collection<CompilationDto>> getPublicAllCompilation(
+            @RequestParam(required = false) Boolean pinned) {
+        log.info("GET-request was received at '/compilations' . " +
+                "Get public information about all compilations with pinned = {}.", pinned);
+        return new ResponseEntity<>(compilationService.getPublicAllCompilation(pinned), HttpStatus.OK);
+    }
+
+    @GetMapping("/compilations/{compId}")
+    public ResponseEntity<CompilationDto> getPublicCompilationById(
+            @PathVariable @Positive Long compId) {
+        log.info("GET-request was received at '/compilations/{}' . " +
+                "Get public information about the compilation with compId = {}.", compId, compId);
+        return new ResponseEntity<>(compilationService.getPublicCompilationById(compId), HttpStatus.OK);
     }
 }
