@@ -11,6 +11,8 @@ import ru.practicum.mainservice.event.dto.EventShortDto;
 import ru.practicum.mainservice.event.dto.NewEventDto;
 import ru.practicum.mainservice.event.dto.UpdateEventUserRequest;
 import ru.practicum.mainservice.event.service.EventService;
+import ru.practicum.mainservice.request.dto.ParticipationRequestDto;
+import ru.practicum.mainservice.request.service.RequestService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -24,7 +26,9 @@ import java.util.Collection;
 @Validated
 public class PrivateController {
     private final EventService eventService;
+    private final RequestService requestService;
 
+    // EVENTS
     @PostMapping("/{userId}/events")
     public ResponseEntity<EventFullDto> createEvent(@PathVariable @Positive Long userId,
                                                     @RequestBody @Valid NewEventDto newEventDto) {
@@ -60,6 +64,35 @@ public class PrivateController {
                 "Patch a EVENT with eventID = {}, from USER with userID={}.", userId, eventId, eventId, userId);
         return new ResponseEntity<>(eventService.updateEventByUser(eventId, userId, updateEventUserRequest),
                 HttpStatus.OK);
+    }
+
+
+    // REQUESTS
+
+    @GetMapping("/{userId}/requests")
+    public ResponseEntity<Collection<ParticipationRequestDto>> getUserRequests(
+            @PathVariable @Positive Long requesterId) {
+        log.info("GET-request was received at 'users/{}/requests' . " +
+                "Get all request by USER with userId = {}.", requesterId, requesterId);
+        return new ResponseEntity<>(requestService.getUserRequests(requesterId), HttpStatus.OK);
+    }
+
+    @PostMapping("/{userId}/requests")
+    public ResponseEntity<ParticipationRequestDto> createRequest(@PathVariable @Positive Long userId,
+                                                                 @RequestParam @Positive Long eventId) {
+        log.info("POST-request was received at 'users/{}/requests' . " +
+                "A REQUEST was created from the USER with userId = {} to participate " +
+                "in EVENT with eventId = {}.", userId, userId, eventId);
+        return new ResponseEntity<>(requestService.createRequest(userId, eventId), HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{userId}/requests/{requestId}/cancel")
+    public ResponseEntity<ParticipationRequestDto> cancelRequest(@PathVariable @Positive Long userId,
+                                                                 @PathVariable @Positive Long requestId) {
+        log.info("PATCH-request was received at 'users/{}/requests/{}/cancel' . " +
+                        "The USER with userId = {} cancels the REQUEST with requestId = {} to participate in the EVENT",
+                userId, requestId, userId, requestId);
+        return new ResponseEntity<>(requestService.cancelRequest(userId, requestId), HttpStatus.CREATED);
     }
 
 }

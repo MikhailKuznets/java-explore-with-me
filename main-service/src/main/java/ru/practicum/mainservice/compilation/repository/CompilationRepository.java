@@ -8,5 +8,5 @@ import java.util.Collection;
 
 @Repository
 public interface CompilationRepository extends JpaRepository<Compilation, Long> {
-    Collection<Compilation>findByPinned(boolean Pinned);
+    Collection<Compilation> findByPinned(boolean pinned);
 }

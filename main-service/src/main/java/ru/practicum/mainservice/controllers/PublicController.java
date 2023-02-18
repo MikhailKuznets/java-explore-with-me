@@ -106,4 +106,5 @@ public class PublicController {
                 "Get public information about the compilation with compId = {}.", compId, compId);
         return new ResponseEntity<>(compilationService.getPublicCompilationById(compId), HttpStatus.OK);
     }
+
 }
