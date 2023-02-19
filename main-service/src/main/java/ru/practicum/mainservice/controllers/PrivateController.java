@@ -84,7 +84,7 @@ public class PrivateController {
             @PathVariable @Positive Long eventId,
             @RequestBody EventRequestStatusUpdateRequest request) {
         log.info("PATCH-request was received at 'users/{}/events/{}/requests' . " +
-                "Get a list of REQUESTS to participate in an EVENT with eventId = {}" +
+                "Get a list of REQUESTS to participate in an EVENT with eventId = {} " +
                 "created by USER with userId = {}.", userId, eventId, eventId, userId);
         return new ResponseEntity<>(requestService.updateRequestStatus(eventId, userId, request),
                 HttpStatus.OK);

@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.mainservice.event.model.Event;
 import ru.practicum.mainservice.event.model.EventState;
 import ru.practicum.mainservice.event.repository.EventRepository;
-import ru.practicum.mainservice.exception.InvalidIdException;
-import ru.practicum.mainservice.exception.NonCanceledRequestException;
-import ru.practicum.mainservice.exception.ParticipantLimitException;
-import ru.practicum.mainservice.exception.UnCreatedRequestException;
+import ru.practicum.mainservice.exception.*;
 import ru.practicum.mainservice.request.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.mainservice.request.dto.EventRequestStatusUpdateResult;
 import ru.practicum.mainservice.request.dto.ParticipationRequestDto;
@@ -21,6 +18,7 @@ import ru.practicum.mainservice.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -103,21 +101,57 @@ class RequestService {
         return requestMapper.toRequestDto(requestRepository.save(request));
     }
 
-    public EventRequestStatusUpdateResult updateRequestStatus(Long eventId, Long userId,
-                                                              EventRequestStatusUpdateRequest request) {
+    public EventRequestStatusUpdateResult updateRequestStatus(Long eventId, Long initiatorId,
+                                                              EventRequestStatusUpdateRequest updateRequest) {
         Event event = findEvent(eventId);
-        User user = findUser(userId);
-        List<Long> requestIds = request.getRequestIds();
-        requestIds.forEach(this::findRequest);
+        findUser(initiatorId);
+        List<Long> requestIds = updateRequest.getRequestIds();
+        RequestStatus selectedStatus = updateRequest.getStatus();
 
-        Integer confirmedRequests = event.getConfirmedRequests();
+        Integer approvedRequests = event.getConfirmedRequests();
         Integer participantLimit = event.getParticipantLimit();
-        if (participantLimit != 0 && (participantLimit <= confirmedRequests)) {
-            throw new ParticipantLimitException("The participant limit has been reached", LocalDateTime.now());
+        long available = (long) (participantLimit - approvedRequests);
+
+        List<ParticipationRequestDto> confirmedRequests = Collections.EMPTY_LIST;
+        List<ParticipationRequestDto> rejectedRequests = Collections.EMPTY_LIST;
+
+        if (participantLimit != 0 && available < 0L) {
+            throw new ParticipantLimitException("The participant limit = " + participantLimit +
+                    " has been reached", LocalDateTime.now());
         }
 
-        Collection<ParticipationRequest> requests = requestRepository.findByIdIn(requestIds);
-        return null;
+        List<ParticipationRequest> requests = requestIds.stream()
+                .map(this::findRequest)
+                .map(this::checkRequestStatus)
+                .collect(Collectors.toList());
+
+        if (participantLimit == 0 || !event.getRequestModeration()) {
+            requests.forEach(r -> r.setStatus(RequestStatus.CONFIRMED));
+            confirmedRequests = requests.stream()
+                    .map(requestRepository::save)
+                    .map(requestMapper::toRequestDto)
+                    .collect(Collectors.toList());
+            return new EventRequestStatusUpdateResult(confirmedRequests, rejectedRequests);
+        }
+
+        if (selectedStatus.equals(RequestStatus.REJECTED)) {
+            requests.forEach(r -> r.setStatus(RequestStatus.REJECTED));
+            rejectedRequests = requests.stream()
+                    .map(requestRepository::save)
+                    .map(requestMapper::toRequestDto)
+                    .collect(Collectors.toList());
+            return new EventRequestStatusUpdateResult(confirmedRequests, rejectedRequests);
+        }
+
+//        if (selectedStatus.equals(RequestStatus.CONFIRMED)) {
+//
+//
+//            requests.forEach(r -> r.setStatus(RequestStatus.REJECTED));
+//            rejectedRequests = requests.stream()
+//                    .map(requestRepository::save)
+//                    .map(requestMapper::toRequestDto)
+//                    .collect(Collectors.toList());
+        return new EventRequestStatusUpdateResult(confirmedRequests, rejectedRequests);
 
     }
 
@@ -146,6 +180,13 @@ class RequestService {
             throw new UnCreatedRequestException("The limit of participation requests has been reached",
                     LocalDateTime.now());
         }
+    }
+
+    private ParticipationRequest checkRequestStatus(ParticipationRequest request) {
+        if (!request.getStatus().equals(RequestStatus.PENDING)) {
+            throw new NotPendingStatusException("Request must have status PENDING", LocalDateTime.now());
+        }
+        return request;
     }
 
 }

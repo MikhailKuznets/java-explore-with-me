@@ -119,7 +119,7 @@ public class EventService {
     private BooleanBuilder getAdminPredicate(EventAdminRequestParameters parameters) {
         BooleanBuilder predicate = new BooleanBuilder();
 
-        List<Long> userIds = parameters.getCatIds();
+        List<Long> userIds = parameters.getUserIds();
         List<EventState> states = parameters.getStates();
         List<Long> catIds = parameters.getCatIds();
         LocalDateTime rangeStart = parameters.getRangeStart();
@@ -134,8 +134,12 @@ public class EventService {
         if (!catIds.isEmpty()) {
             predicate.and(QEvent.event.category.id.in(catIds));
         }
-        predicate.and(QEvent.event.eventDate.after(rangeStart));
-        predicate.and(QEvent.event.eventDate.before(rangeEnd));
+        if (rangeStart != null) {
+            predicate.and(QEvent.event.category.id.in(catIds));
+        }
+        if (rangeEnd != null) {
+            predicate.and(QEvent.event.eventDate.before(rangeEnd));
+        }
         return predicate;
     }
 
@@ -160,7 +164,7 @@ public class EventService {
 
         UtilityEvent utilityEvent = eventMapper.toUtilityEventClass(updateEventUserRequest);
         Event updatedEvent = EventUpdater.updateEventAnnotation(selectedEvent, utilityEvent);
-        updatedEvent.setState(EventState.CANCELED);
+        updatedEvent.setState(EventState.PENDING);
         updatedEvent = updateEventCategory(updatedEvent, utilityEvent.getCategory());
         return eventMapper.toFullEventDto(eventRepository.save(updatedEvent));
     }

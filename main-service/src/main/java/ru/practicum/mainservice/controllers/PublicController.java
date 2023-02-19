@@ -55,7 +55,7 @@ public class PublicController {
     @GetMapping("/events")
     public ResponseEntity<Collection<EventShortDto>> getPublicAllEvents(
             @RequestParam(required = false) @NotBlank String text,
-            @RequestParam(defaultValue = "[]", required = false) Long[] ids,
+            @RequestParam(defaultValue = "", required = false) Long[] ids,
             @RequestParam(required = false) Boolean paid,
             @RequestParam(required = false) @FutureOrPresent LocalDateTime rangeStart,
             @RequestParam(required = false) @Future LocalDateTime rangeEnd,

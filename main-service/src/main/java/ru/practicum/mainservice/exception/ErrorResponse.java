@@ -7,14 +7,14 @@ import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
 
 @Data
-class ErrorResponse {
+public class ErrorResponse {
     private final HttpStatus status;
     private final String message;
     private final String reason;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime timestamp;
 
-    public ErrorResponse(InvalidIdException e) {
+    public ErrorResponse(ApiError e) {
         this.status = e.getStatus();
         this.reason = e.getReason();
         this.message = e.getMessage();

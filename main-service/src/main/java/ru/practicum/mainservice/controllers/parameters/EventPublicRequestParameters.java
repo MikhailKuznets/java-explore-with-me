@@ -26,7 +26,8 @@ public class EventPublicRequestParameters {
             this.rangeStart = LocalDateTime.now();
         }
         if (this.rangeEnd == null) {
-            this.rangeEnd = LocalDateTime.MAX;
+            // Say Hello WarHammer 40.000 =)
+            this.rangeEnd = LocalDateTime.now().plusYears(40_000);
         }
     }
 }
