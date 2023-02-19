@@ -2,6 +2,7 @@ package ru.practicum.mainservice.event.service;
 
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -11,10 +12,7 @@ import ru.practicum.mainservice.controllers.parameters.EventAdminRequestParamete
 import ru.practicum.mainservice.controllers.parameters.EventPublicRequestParameters;
 import ru.practicum.mainservice.event.dto.*;
 import ru.practicum.mainservice.event.mapper.EventMapper;
-import ru.practicum.mainservice.event.model.AdminEventState;
-import ru.practicum.mainservice.event.model.Event;
-import ru.practicum.mainservice.event.model.EventState;
-import ru.practicum.mainservice.event.model.QEvent;
+import ru.practicum.mainservice.event.model.*;
 import ru.practicum.mainservice.event.repository.EventRepository;
 import ru.practicum.mainservice.event.updater.EventUpdater;
 import ru.practicum.mainservice.event.updater.UtilityEvent;
@@ -31,6 +29,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
@@ -71,7 +70,9 @@ public class EventService {
         PageRequest pageRequest = PageRequest.of(from, size);
 
         BooleanBuilder predicate = getPublicPredicate(parameters);
+        log.error(predicate.toString());
         Page<Event> events = eventRepository.findAll(predicate, pageRequest);
+        log.error(events.toString());
         return events.stream()
                 .map(eventMapper::toShortEventDto)
                 .collect(Collectors.toList());
@@ -91,17 +92,20 @@ public class EventService {
             predicate.and(QEvent.event.annotation.likeIgnoreCase(text)
                     .or(QEvent.event.description.likeIgnoreCase(text)));
         }
-        if (catIds != null) {
+        if (!catIds.isEmpty()) {
             predicate.and(QEvent.event.category.id.in(catIds));
         }
         if (paid != null) {
             predicate.and(QEvent.event.paid.eq(paid));
         }
+
         predicate.and(QEvent.event.eventDate.after(rangeStart));
         predicate.and(QEvent.event.eventDate.before(rangeEnd));
-        if (!onlyAvailable)
+
+        if (onlyAvailable) {
             predicate.and(QEvent.event.participantLimit.eq(0)
                     .or(QEvent.event.participantLimit.lt(QEvent.event.confirmedRequests)));
+        }
         return predicate;
     }
 
@@ -161,10 +165,17 @@ public class EventService {
         if (state.equals(EventState.PUBLISHED)) {
             throw new NonUpdatedEventException("Only pending or canceled events can be changed", LocalDateTime.now());
         }
-
         UtilityEvent utilityEvent = eventMapper.toUtilityEventClass(updateEventUserRequest);
         Event updatedEvent = EventUpdater.updateEventAnnotation(selectedEvent, utilityEvent);
-        updatedEvent.setState(EventState.PENDING);
+        UpdateEventUserState stateAction = updateEventUserRequest.getStateAction();
+        switch (stateAction) {
+            case CANCEL_REVIEW:
+                updatedEvent.setState(EventState.CANCELED);
+                break;
+            case SEND_TO_REVIEW:
+                updatedEvent.setState(EventState.PENDING);
+                break;
+        }
         updatedEvent = updateEventCategory(updatedEvent, utilityEvent.getCategory());
         return eventMapper.toFullEventDto(eventRepository.save(updatedEvent));
     }

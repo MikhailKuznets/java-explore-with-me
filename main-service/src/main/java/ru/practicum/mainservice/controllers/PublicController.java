@@ -55,10 +55,10 @@ public class PublicController {
     @GetMapping("/events")
     public ResponseEntity<Collection<EventShortDto>> getPublicAllEvents(
             @RequestParam(required = false) @NotBlank String text,
-            @RequestParam(defaultValue = "", required = false) Long[] ids,
+            @RequestParam(defaultValue = "", required = false) List<Long> ids,
             @RequestParam(required = false) Boolean paid,
-            @RequestParam(required = false) @FutureOrPresent LocalDateTime rangeStart,
-            @RequestParam(required = false) @Future LocalDateTime rangeEnd,
+            @RequestParam(required = false) LocalDateTime rangeStart,
+            @RequestParam(required = false) LocalDateTime rangeEnd,
             @RequestParam(defaultValue = "false", required = false) Boolean onlyAvailable,
             @RequestParam(required = false) EventRequestSort sort,
             @RequestParam(defaultValue = "0", required = false) @PositiveOrZero Integer from,
@@ -66,7 +66,7 @@ public class PublicController {
 
         EventPublicRequestParameters eventPublicRequestParameters = EventPublicRequestParameters.builder()
                 .text(text)
-                .catIds(List.of(ids))
+                .catIds(ids)
                 .paid(paid)
                 .rangeStart(rangeStart)
                 .rangeEnd(rangeEnd)

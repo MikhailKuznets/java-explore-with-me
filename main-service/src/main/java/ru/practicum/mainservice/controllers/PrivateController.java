@@ -63,7 +63,8 @@ public class PrivateController {
             @PathVariable @Positive Long eventId,
             @RequestBody UpdateEventUserRequest updateEventUserRequest) {
         log.info("PATCH-request was received at 'users/{}/events/{}' . " +
-                "Patch a EVENT with eventID = {}, from USER with userID={}.", userId, eventId, eventId, userId);
+                        "Patch a EVENT with eventID = {}, from USER with userID = {}. New Data ={}",
+                userId, eventId, eventId, userId, updateEventUserRequest);
         return new ResponseEntity<>(eventService.updateEventByUser(eventId, userId, updateEventUserRequest),
                 HttpStatus.OK);
     }
@@ -84,8 +85,9 @@ public class PrivateController {
             @PathVariable @Positive Long eventId,
             @RequestBody EventRequestStatusUpdateRequest request) {
         log.info("PATCH-request was received at 'users/{}/events/{}/requests' . " +
-                "Get a list of REQUESTS to participate in an EVENT with eventId = {} " +
-                "created by USER with userId = {}.", userId, eventId, eventId, userId);
+                        "Get a list of REQUESTS to participate in an EVENT with eventId = {} " +
+                        "created by USER with userId = {}. Data: {}",
+                userId, eventId, eventId, userId, request);
         return new ResponseEntity<>(requestService.updateRequestStatus(eventId, userId, request),
                 HttpStatus.OK);
     }

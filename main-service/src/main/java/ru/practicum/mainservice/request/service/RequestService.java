@@ -42,7 +42,8 @@ class RequestService {
     public Collection<ParticipationRequestDto> getRequestsForInitiator(Long eventId, Long userId) {
         findUser(userId);
         findEvent(eventId);
-        Collection<ParticipationRequest> requests = requestRepository.findAllByRequester_IdAndEvent_Id(userId, eventId);
+
+        Collection<ParticipationRequest> requests = requestRepository.findAllByEvent_Id(eventId);
         return requests.stream()
                 .map(requestMapper::toRequestDto)
                 .collect(Collectors.toList());
@@ -57,7 +58,7 @@ class RequestService {
         checkRequestExistence(userId, eventId);
         Integer confirmedRequests = event.getConfirmedRequests();
         Integer participantLimit = event.getParticipantLimit();
-        Boolean isAvailable = (participantLimit - confirmedRequests) > 0;
+        boolean isAvailable = (participantLimit - confirmedRequests) > 0;
 
         if (participantLimit != 0 && !isAvailable) {
             throw new UnCreatedRequestException("The limit of participation requests has been reached",
@@ -151,7 +152,7 @@ class RequestService {
         if (selectedStatus.equals(RequestStatus.CONFIRMED)) {
             if (potentialParticipants <= availableParticipants) {
 //                requests.forEach(r -> r.setStatus(RequestStatus.CONFIRMED));
-                rejectedRequests = requests.stream()
+                confirmedRequests = requests.stream()
                         .peek(r -> r.setStatus(RequestStatus.CONFIRMED))
                         .map(requestRepository::save)
                         .map(requestMapper::toRequestDto)
