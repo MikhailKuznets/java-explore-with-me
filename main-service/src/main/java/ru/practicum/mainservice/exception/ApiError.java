@@ -15,5 +15,6 @@ public class ApiError extends RuntimeException {
     public String message;
     public String reason;
     public LocalDateTime timestamp;
-
 }
+
+

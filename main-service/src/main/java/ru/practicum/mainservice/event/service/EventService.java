@@ -175,21 +175,23 @@ public class EventService {
         AdminEventState stateAction = updateEventAdminRequest.getStateAction();
         EventState state = selectedEvent.getState();
 
-        switch (stateAction) {
-            case PUBLISH_EVENT:
-                if (!state.equals(EventState.PENDING)) {
-                    throw new NonUpdatedEventException("Cannot publish the event because " +
-                            "it's not in the right state: " + state, LocalDateTime.now());
-                }
-                selectedEvent.setState(EventState.PUBLISHED);
-                break;
-            case REJECT_EVENT:
-                if (selectedEvent.getState().equals(EventState.PUBLISHED)) {
-                    throw new NonUpdatedEventException("Cannot reject the event because " +
-                            "it's not in the right state: " + state, LocalDateTime.now());
-                }
-                selectedEvent.setState(EventState.CANCELED);
-                break;
+        if (stateAction != null) {
+            switch (stateAction) {
+                case PUBLISH_EVENT:
+                    if (!state.equals(EventState.PENDING)) {
+                        throw new NonUpdatedEventException("Cannot publish the event because " +
+                                "it's not in the right state: " + state, LocalDateTime.now());
+                    }
+                    selectedEvent.setState(EventState.PUBLISHED);
+                    break;
+                case REJECT_EVENT:
+                    if (selectedEvent.getState().equals(EventState.PUBLISHED)) {
+                        throw new NonUpdatedEventException("Cannot reject the event because " +
+                                "it's not in the right state: " + state, LocalDateTime.now());
+                    }
+                    selectedEvent.setState(EventState.CANCELED);
+                    break;
+            }
         }
 
         UtilityEvent utilityEvent = eventMapper.toUtilityEventClass(updateEventAdminRequest);

@@ -72,7 +72,7 @@ public class AdminController {
     @PatchMapping("/events/{eventId}")
     public ResponseEntity<EventFullDto> updateEventByAdmin(
             @PathVariable @Positive Long eventId,
-            @RequestBody UpdateEventAdminRequest updateEventAdminRequest) {
+            @RequestBody @Valid UpdateEventAdminRequest updateEventAdminRequest) {
         log.info("PATCH-request was received at 'admin/events/{}' . " +
                         "Patch a EVENT with eventID = {}, from ADMIN. New event data: {}",
                 eventId, eventId, updateEventAdminRequest);

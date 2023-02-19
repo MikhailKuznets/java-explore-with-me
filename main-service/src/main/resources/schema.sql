@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS events
     annotation  VARCHAR(2000)    NOT NULL,
     created TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     published TIMESTAMP WITHOUT TIME ZONE,
+--     category_id    BIGINT REFERENCES categories ON DELETE CASCADE,
     category_id    BIGINT REFERENCES categories ON DELETE CASCADE,
     description  VARCHAR(7000)    NOT NULL,
     event_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,

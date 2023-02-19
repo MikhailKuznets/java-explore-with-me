@@ -7,6 +7,8 @@ import ru.practicum.mainservice.category.dto.NewCategoryDto;
 import ru.practicum.mainservice.category.mapper.CategoryMapper;
 import ru.practicum.mainservice.category.model.Category;
 import ru.practicum.mainservice.category.repository.CategoryRepository;
+import ru.practicum.mainservice.event.repository.EventRepository;
+import ru.practicum.mainservice.exception.CategoryIsNotEmptyException;
 import ru.practicum.mainservice.exception.InvalidIdException;
 
 import java.time.LocalDateTime;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+    private final EventRepository eventRepository;
     private final CategoryMapper categoryMapper;
 
     public CategoryDto createCategory(NewCategoryDto newCategoryDto) {
@@ -34,6 +37,9 @@ public class CategoryService {
     }
 
     public void deleteCategoryById(Long catId) {
+        if(!eventRepository.findAllByCategory_Id(catId).isEmpty()){
+            throw new CategoryIsNotEmptyException(LocalDateTime.now());
+        }
         categoryRepository.deleteById(catId);
     }
 

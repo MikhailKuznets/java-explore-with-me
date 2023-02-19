@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.practicum.mainservice.exception.*;
 
+import javax.persistence.PersistenceException;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -24,38 +25,31 @@ public class ErrorHandler {
 
     @ExceptionHandler({NonCanceledRequestException.class,
             NonUpdatedEventException.class,
-            ParticipantLimitException.class})
+            ParticipantLimitException.class,
+            CategoryIsNotEmptyException.class,
+            UnCreatedRequestException.class})
     @ResponseStatus(value = HttpStatus.CONFLICT)
     public ErrorResponse handleConflict(final ApiError e) {
         log.error("HTTP status code 409 - " + e.getMessage());
         return new ErrorResponse(e);
     }
 
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class,
+            MethodArgumentNotValidException.class,
+            MissingServletRequestParameterException.class
+    })
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ErrorResponse handleUnknownBookingState(final MethodArgumentTypeMismatchException e) {
         log.error("BAD REQUEST , КОД 400 - {}", e.getMessage());
-//        return new ErrorResponse("Unknown " + e.getName() + ": " + e.getValue());
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage(), "Test1", LocalDateTime.now());
         return new ErrorResponse(apiError);
     }
 
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidateParameterException(final MethodArgumentNotValidException e) {
-        log.error("КОД 400 - Ошибка валидации данных: {}", e.getMessage());
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage(), "Test2", LocalDateTime.now());
-
-        return new ErrorResponse(apiError);
-    }
-
-    @ExceptionHandler(MissingServletRequestParameterException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidateParameterException(final MissingServletRequestParameterException e) {
-        log.error("КОД 400 - Ошибка валидации данных: {}", e.getMessage());
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage(), "Test3", LocalDateTime.now());
-
+    @ExceptionHandler(PersistenceException.class)
+    @ResponseStatus(value = HttpStatus.CONFLICT)
+    public ErrorResponse handleValidateParameterException(final PersistenceException e) {
+        log.error("КОД 409 - Ошибка валидации данных: {}", e.getMessage());
+        ApiError apiError = new ApiError(HttpStatus.CONFLICT, e.getMessage(), "Test4", LocalDateTime.now());
         return new ErrorResponse(apiError);
     }
 

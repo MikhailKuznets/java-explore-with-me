@@ -57,7 +57,9 @@ class RequestService {
         checkRequestExistence(userId, eventId);
         Integer confirmedRequests = event.getConfirmedRequests();
         Integer participantLimit = event.getParticipantLimit();
-        if (participantLimit != 0 && (participantLimit <= confirmedRequests)) {
+        Boolean isAvailable = (participantLimit - confirmedRequests) > 0;
+
+        if (participantLimit != 0 && !isAvailable) {
             throw new UnCreatedRequestException("The limit of participation requests has been reached",
                     LocalDateTime.now());
         }
@@ -79,7 +81,7 @@ class RequestService {
         // Проверка пре-модерации и изменение confirmedRequests
         if (!event.getRequestModeration()) {
             participationRequest.setStatus(RequestStatus.CONFIRMED);
-            event.setConfirmedRequests(confirmedRequests++);
+            event.setConfirmedRequests(++confirmedRequests);
             eventRepository.save(event);
         }
 
@@ -108,14 +110,15 @@ class RequestService {
         List<Long> requestIds = updateRequest.getRequestIds();
         RequestStatus selectedStatus = updateRequest.getStatus();
 
-        Integer approvedRequests = event.getConfirmedRequests();
-        Integer participantLimit = event.getParticipantLimit();
-        long available = (long) (participantLimit - approvedRequests);
+        int approvedRequests = event.getConfirmedRequests();
+        int participantLimit = event.getParticipantLimit();
+        int availableParticipants = participantLimit - approvedRequests;
+        int potentialParticipants = requestIds.size();
 
         List<ParticipationRequestDto> confirmedRequests = Collections.EMPTY_LIST;
         List<ParticipationRequestDto> rejectedRequests = Collections.EMPTY_LIST;
 
-        if (participantLimit != 0 && available < 0L) {
+        if (participantLimit != 0 && availableParticipants <= 0) {
             throw new ParticipantLimitException("The participant limit = " + participantLimit +
                     " has been reached", LocalDateTime.now());
         }
@@ -126,8 +129,9 @@ class RequestService {
                 .collect(Collectors.toList());
 
         if (participantLimit == 0 || !event.getRequestModeration()) {
-            requests.forEach(r -> r.setStatus(RequestStatus.CONFIRMED));
+//            requests.forEach(r -> r.setStatus(RequestStatus.CONFIRMED));
             confirmedRequests = requests.stream()
+                    .peek(r -> r.setStatus(RequestStatus.CONFIRMED))
                     .map(requestRepository::save)
                     .map(requestMapper::toRequestDto)
                     .collect(Collectors.toList());
@@ -135,24 +139,42 @@ class RequestService {
         }
 
         if (selectedStatus.equals(RequestStatus.REJECTED)) {
-            requests.forEach(r -> r.setStatus(RequestStatus.REJECTED));
+//            requests.forEach(r -> r.setStatus(RequestStatus.REJECTED));
             rejectedRequests = requests.stream()
+                    .peek(r -> r.setStatus(RequestStatus.REJECTED))
                     .map(requestRepository::save)
                     .map(requestMapper::toRequestDto)
                     .collect(Collectors.toList());
             return new EventRequestStatusUpdateResult(confirmedRequests, rejectedRequests);
         }
 
-//        if (selectedStatus.equals(RequestStatus.CONFIRMED)) {
-//
-//
-//            requests.forEach(r -> r.setStatus(RequestStatus.REJECTED));
-//            rejectedRequests = requests.stream()
-//                    .map(requestRepository::save)
-//                    .map(requestMapper::toRequestDto)
-//                    .collect(Collectors.toList());
+        if (selectedStatus.equals(RequestStatus.CONFIRMED)) {
+            if (potentialParticipants <= availableParticipants) {
+//                requests.forEach(r -> r.setStatus(RequestStatus.CONFIRMED));
+                rejectedRequests = requests.stream()
+                        .peek(r -> r.setStatus(RequestStatus.CONFIRMED))
+                        .map(requestRepository::save)
+                        .map(requestMapper::toRequestDto)
+                        .collect(Collectors.toList());
+                event.setConfirmedRequests(approvedRequests + potentialParticipants);
+            } else {
+                confirmedRequests = requests.stream()
+                        .limit(availableParticipants)
+                        .peek(r -> r.setStatus(RequestStatus.CONFIRMED))
+                        .map(requestRepository::save)
+                        .map(requestMapper::toRequestDto)
+                        .collect(Collectors.toList());
+                rejectedRequests = requests.stream()
+                        .skip(availableParticipants)
+                        .peek(r -> r.setStatus(RequestStatus.REJECTED))
+                        .map(requestRepository::save)
+                        .map(requestMapper::toRequestDto)
+                        .collect(Collectors.toList());
+                event.setConfirmedRequests(event.getParticipantLimit());
+            }
+            eventRepository.save(event);
+        }
         return new EventRequestStatusUpdateResult(confirmedRequests, rejectedRequests);
-
     }
 
 
