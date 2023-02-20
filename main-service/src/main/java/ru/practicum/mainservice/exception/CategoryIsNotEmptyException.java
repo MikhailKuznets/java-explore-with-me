@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
-public class CategoryIsNotEmptyException extends ApiError{
+public class CategoryIsNotEmptyException extends ApiError {
     public CategoryIsNotEmptyException(LocalDateTime timestamp) {
         this.status = HttpStatus.CONFLICT;
         this.reason = "Integrity constraint has been violated.";

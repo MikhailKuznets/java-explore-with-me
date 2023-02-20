@@ -37,7 +37,7 @@ public class CategoryService {
     }
 
     public void deleteCategoryById(Long catId) {
-        if(!eventRepository.findAllByCategory_Id(catId).isEmpty()){
+        if (!eventRepository.findAllByCategory_Id(catId).isEmpty()) {
             throw new CategoryIsNotEmptyException(LocalDateTime.now());
         }
         categoryRepository.deleteById(catId);

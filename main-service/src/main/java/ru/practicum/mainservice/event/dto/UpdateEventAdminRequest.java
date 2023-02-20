@@ -5,7 +5,6 @@ import lombok.Data;
 import ru.practicum.mainservice.event.model.AdminEventState;
 import ru.practicum.mainservice.event.model.Location;
 
-import javax.validation.constraints.FutureOrPresent;
 import java.time.LocalDateTime;
 
 @Data
