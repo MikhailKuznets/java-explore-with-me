@@ -23,6 +23,8 @@ services:
       - POSTGRES_DB=ewm-stat
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+    volumes:
+      - .:/var/lib/postgresql/data/ewm-stat
 
   ewm-service:
     build: main-service
@@ -48,3 +50,5 @@ services:
       - POSTGRES_DB=ewm-main
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+    volumes:
+      - .:/var/lib/postgresql/data/ewm-main
