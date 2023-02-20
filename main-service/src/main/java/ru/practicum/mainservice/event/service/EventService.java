@@ -285,7 +285,6 @@ public class EventService {
         String[] uris = {"/events/" + eventId.toString()};
         ObjectMapper objectMapper = new ObjectMapper();
 
-        statClient.getStat(start, end, uris, false).getBody().toString();
         List<ViewsStatsRequest> stat = objectMapper
                 .convertValue(statClient.getStat(start, end, uris, false).getBody(), new TypeReference<>() {
                 });
@@ -293,7 +292,6 @@ public class EventService {
             eventFullDto.setViews(0);
         } else {
             eventFullDto.setViews(stat.get(0).getHits());
-            log.error(stat.get(0).toString());
         }
 
         return eventFullDto;
@@ -307,7 +305,6 @@ public class EventService {
         String[] uris = {"/events/" + eventId.toString()};
         ObjectMapper objectMapper = new ObjectMapper();
 
-        statClient.getStat(start, end, uris, false).getBody().toString();
         List<ViewsStatsRequest> stat = objectMapper
                 .convertValue(statClient.getStat(start, end, uris, false).getBody(), new TypeReference<>() {
                 });
@@ -315,7 +312,6 @@ public class EventService {
             eventShortDto.setViews(0);
         } else {
             eventShortDto.setViews(stat.get(0).getHits());
-            log.error(stat.get(0).toString());
         }
 
         return eventShortDto;
