@@ -1,4 +1,4 @@
-package ru.practicum.mainservice.controllers.parameters;
+package ru.practicum.mainservice.controllers.admincontrollers.parameters;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
