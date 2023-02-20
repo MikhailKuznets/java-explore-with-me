@@ -28,8 +28,7 @@ CREATE TABLE IF NOT EXISTS events
     annotation  VARCHAR(2000)    NOT NULL,
     created TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     published TIMESTAMP WITHOUT TIME ZONE,
---     category_id    BIGINT REFERENCES categories ON DELETE CASCADE,
-    category_id    BIGINT REFERENCES categories ON DELETE CASCADE,
+    category_id    BIGINT REFERENCES categories,
     description  VARCHAR(7000)    NOT NULL,
     event_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     initiator_id BIGINT REFERENCES users,
@@ -41,7 +40,6 @@ CREATE TABLE IF NOT EXISTS events
     request_moderation BOOLEAN NOT NULL,
     state  VARCHAR(30)    NOT NULL,
     title  VARCHAR(120)    NOT NULL,
---     views INTEGER NOT NULL,
     CONSTRAINT pr_event PRIMARY KEY (event_id)
 );
 

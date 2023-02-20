@@ -23,6 +23,14 @@ public class ErrorHandler {
         return new ErrorResponse(e);
     }
 
+    @ExceptionHandler({DataValidateException.class,
+            NotPendingStatusException.class})
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBadRequest(final ApiError e) {
+        log.error("HTTP status code 409 - " + e.getMessage());
+        return new ErrorResponse(e);
+    }
+
     @ExceptionHandler({NonCanceledRequestException.class,
             NonUpdatedEventException.class,
             ParticipantLimitException.class,
@@ -40,16 +48,18 @@ public class ErrorHandler {
     })
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ErrorResponse handleUnknownBookingState(final MethodArgumentTypeMismatchException e) {
-        log.error("BAD REQUEST , КОД 400 - {}", e.getMessage());
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage(), "Test1", LocalDateTime.now());
+        log.error("HTTP status code 400 - {}", e.getMessage());
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage(),
+                "TIncorrectly made request.", LocalDateTime.now());
         return new ErrorResponse(apiError);
     }
 
     @ExceptionHandler(PersistenceException.class)
     @ResponseStatus(value = HttpStatus.CONFLICT)
     public ErrorResponse handleValidateParameterException(final PersistenceException e) {
-        log.error("КОД 409 - Ошибка валидации данных: {}", e.getMessage());
-        ApiError apiError = new ApiError(HttpStatus.CONFLICT, e.getMessage(), "Test4", LocalDateTime.now());
+        log.error("HTTP status code 409: {}", e.getMessage());
+        ApiError apiError = new ApiError(HttpStatus.CONFLICT, e.getMessage(),
+                "Integrity constraint has been violated.", LocalDateTime.now());
         return new ErrorResponse(apiError);
     }
 

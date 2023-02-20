@@ -9,6 +9,7 @@ import ru.practicum.mainservice.category.model.Category;
 import ru.practicum.mainservice.category.repository.CategoryRepository;
 import ru.practicum.mainservice.controllers.parameters.EventAdminRequestParameters;
 import ru.practicum.mainservice.controllers.parameters.EventPublicRequestParameters;
+import ru.practicum.mainservice.controllers.parameters.EventRequestSort;
 import ru.practicum.mainservice.event.dto.*;
 import ru.practicum.mainservice.event.mapper.EventMapper;
 import ru.practicum.mainservice.event.model.*;
@@ -26,6 +27,7 @@ import ru.practicum.statdto.RequestHitDto;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +39,7 @@ public class EventService {
     private final CategoryRepository categoryRepository;
     private final EventMapper eventMapper;
     private final StatClient statClient;
+
 
     public EventFullDto createEvent(NewEventDto newEventDto, Long userId) {
         // Валидация
@@ -65,7 +68,7 @@ public class EventService {
     }
 
     public Collection<EventShortDto> getPublicEventsWithParameters(
-            EventPublicRequestParameters parameters,
+            EventPublicRequestParameters parameters, EventRequestSort sort,
             Integer from, Integer size, HttpServletRequest request) {
         addHit(request);
         parameters.checkTime();
@@ -74,9 +77,18 @@ public class EventService {
 
         BooleanBuilder predicate = getPublicPredicate(parameters);
         Page<Event> events = eventRepository.findAll(predicate, pageRequest);
-        return events.stream()
+        List<EventShortDto> eventDtos = events.stream()
                 .map(eventMapper::toShortEventDto)
                 .collect(Collectors.toList());
+        switch (sort) {
+            case EVENT_DATE:
+                eventDtos.sort(Comparator.comparing(EventShortDto::getEventDate));
+                break;
+            case VIEWS:
+                eventDtos.sort(Comparator.comparing(EventShortDto::getViews));
+                break;
+        }
+        return eventDtos;
     }
 
     private BooleanBuilder getPublicPredicate(EventPublicRequestParameters parameters) {

@@ -70,6 +70,4 @@ public class Event {
     @Column(name = "title", nullable = false)
     private String title;
 
-//    @Column(name = "views", nullable = false)
-//    private Integer views = 0;
 }

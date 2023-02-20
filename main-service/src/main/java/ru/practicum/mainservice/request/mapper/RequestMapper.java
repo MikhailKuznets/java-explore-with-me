@@ -10,8 +10,8 @@ import ru.practicum.mainservice.request.model.ParticipationRequest;
 public interface RequestMapper {
     RequestMapper INSTANCE = Mappers.getMapper(RequestMapper.class);
 
-    @Mapping(source = "requester.id", target = "requester")
-    @Mapping(source = "event.id", target = "event")
+    @Mapping(target = "requester", source = "requester.id")
+    @Mapping(target = "event", source = "event.id")
     ParticipationRequestDto toRequestDto(ParticipationRequest participationRequest);
 
 }

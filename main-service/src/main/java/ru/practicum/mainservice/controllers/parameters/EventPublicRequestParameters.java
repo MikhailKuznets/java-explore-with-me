@@ -19,7 +19,7 @@ public class EventPublicRequestParameters {
     private LocalDateTime rangeStart;
     private LocalDateTime rangeEnd;
     private Boolean onlyAvailable;
-    private EventRequestSort sort;
+//    private EventRequestSort sort;
 
     public void checkTime() {
         if (this.rangeStart == null) {

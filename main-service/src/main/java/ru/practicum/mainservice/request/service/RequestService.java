@@ -130,7 +130,6 @@ class RequestService {
                 .collect(Collectors.toList());
 
         if (participantLimit == 0 || !event.getRequestModeration()) {
-//            requests.forEach(r -> r.setStatus(RequestStatus.CONFIRMED));
             confirmedRequests = requests.stream()
                     .peek(r -> r.setStatus(RequestStatus.CONFIRMED))
                     .map(requestRepository::save)
@@ -140,7 +139,6 @@ class RequestService {
         }
 
         if (selectedStatus.equals(RequestStatus.REJECTED)) {
-//            requests.forEach(r -> r.setStatus(RequestStatus.REJECTED));
             rejectedRequests = requests.stream()
                     .peek(r -> r.setStatus(RequestStatus.REJECTED))
                     .map(requestRepository::save)
@@ -151,7 +149,6 @@ class RequestService {
 
         if (selectedStatus.equals(RequestStatus.CONFIRMED)) {
             if (potentialParticipants <= availableParticipants) {
-//                requests.forEach(r -> r.setStatus(RequestStatus.CONFIRMED));
                 confirmedRequests = requests.stream()
                         .peek(r -> r.setStatus(RequestStatus.CONFIRMED))
                         .map(requestRepository::save)

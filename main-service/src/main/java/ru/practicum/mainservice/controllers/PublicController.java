@@ -20,7 +20,8 @@ import ru.practicum.mainservice.event.dto.EventShortDto;
 import ru.practicum.mainservice.event.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -61,7 +62,7 @@ public class PublicController {
             @RequestParam(required = false) LocalDateTime rangeStart,
             @RequestParam(required = false) LocalDateTime rangeEnd,
             @RequestParam(defaultValue = "false", required = false) Boolean onlyAvailable,
-            @RequestParam(required = false) EventRequestSort sort,
+            @RequestParam(defaultValue = "EVENT_DATE", required = false) EventRequestSort sort,
             @RequestParam(defaultValue = "0", required = false) @PositiveOrZero Integer from,
             @RequestParam(defaultValue = "10", required = false) @Positive Integer size,
             HttpServletRequest request) {
@@ -73,13 +74,12 @@ public class PublicController {
                 .rangeStart(rangeStart)
                 .rangeEnd(rangeEnd)
                 .onlyAvailable(onlyAvailable)
-                .sort(sort)
                 .build();
 
         log.info("GET-request was received at '/events' . " +
                 "GET all events with search parameters  = {}.", eventPublicRequestParameters);
 
-        return new ResponseEntity<>(eventService.getPublicEventsWithParameters(eventPublicRequestParameters,
+        return new ResponseEntity<>(eventService.getPublicEventsWithParameters(eventPublicRequestParameters, sort,
                 from, size, request), HttpStatus.OK);
     }
 
