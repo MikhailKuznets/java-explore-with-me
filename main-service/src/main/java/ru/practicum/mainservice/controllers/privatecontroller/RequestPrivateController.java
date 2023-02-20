@@ -1,4 +1,4 @@
-package ru.practicum.mainservice.controllers;
+package ru.practicum.mainservice.controllers.privatecontroller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import java.util.Collection;
 @Slf4j
 @RequiredArgsConstructor
 @Validated
-public class PrivateController {
+public class RequestPrivateController {
     private final RequestService requestService;
 
     @GetMapping("/{userId}/requests")
