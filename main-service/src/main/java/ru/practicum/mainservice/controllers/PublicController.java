@@ -19,6 +19,7 @@ import ru.practicum.mainservice.event.dto.EventFullDto;
 import ru.practicum.mainservice.event.dto.EventShortDto;
 import ru.practicum.mainservice.event.service.EventService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -54,7 +55,7 @@ public class PublicController {
     // EVENTS
     @GetMapping("/events")
     public ResponseEntity<Collection<EventShortDto>> getPublicAllEvents(
-            @RequestParam(required = false) @NotBlank String text,
+            @RequestParam(required = false) String text,
             @RequestParam(defaultValue = "", required = false) List<Long> ids,
             @RequestParam(required = false) Boolean paid,
             @RequestParam(required = false) LocalDateTime rangeStart,
@@ -62,7 +63,8 @@ public class PublicController {
             @RequestParam(defaultValue = "false", required = false) Boolean onlyAvailable,
             @RequestParam(required = false) EventRequestSort sort,
             @RequestParam(defaultValue = "0", required = false) @PositiveOrZero Integer from,
-            @RequestParam(defaultValue = "10", required = false) @Positive Integer size) {
+            @RequestParam(defaultValue = "10", required = false) @Positive Integer size,
+            HttpServletRequest request) {
 
         EventPublicRequestParameters eventPublicRequestParameters = EventPublicRequestParameters.builder()
                 .text(text)
@@ -78,15 +80,16 @@ public class PublicController {
                 "GET all events with search parameters  = {}.", eventPublicRequestParameters);
 
         return new ResponseEntity<>(eventService.getPublicEventsWithParameters(eventPublicRequestParameters,
-                from, size), HttpStatus.OK);
+                from, size, request), HttpStatus.OK);
     }
 
     @GetMapping("/events/{eventId}")
     public ResponseEntity<EventFullDto> getPublicEventById(
-            @PathVariable @Positive Long eventId) {
+            @PathVariable @Positive Long eventId,
+            HttpServletRequest request) {
         log.info("GET-request was received at '/events/{}' . " +
                 "Get public information about the event with eventId = {}.", eventId, eventId);
-        return new ResponseEntity<>(eventService.getPublicEventById(eventId), HttpStatus.OK);
+        return new ResponseEntity<>(eventService.getPublicEventById(eventId, request), HttpStatus.OK);
     }
 
     // COMPILATIONS

@@ -21,7 +21,10 @@ import ru.practicum.mainservice.exception.InvalidIdException;
 import ru.practicum.mainservice.exception.NonUpdatedEventException;
 import ru.practicum.mainservice.user.model.User;
 import ru.practicum.mainservice.user.repository.UserRepository;
+import ru.practicum.statclient.StatClient;
+import ru.practicum.statdto.RequestHitDto;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -29,12 +32,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final EventMapper eventMapper;
+    private final StatClient statClient;
 
     public EventFullDto createEvent(NewEventDto newEventDto, Long userId) {
         // Валидация
@@ -56,23 +59,22 @@ public class EventService {
         return eventMapper.toFullEventDto(findEvent(eventId));
     }
 
-    public EventFullDto getPublicEventById(Long eventId) {
+    public EventFullDto getPublicEventById(Long eventId, HttpServletRequest request) {
         Event event = findEvent(eventId);
+        addHit(request);
         return eventMapper.toFullEventDto(event);
     }
 
     public Collection<EventShortDto> getPublicEventsWithParameters(
             EventPublicRequestParameters parameters,
-            Integer from, Integer size) {
-
+            Integer from, Integer size, HttpServletRequest request) {
+        addHit(request);
         parameters.checkTime();
 
         PageRequest pageRequest = PageRequest.of(from, size);
 
         BooleanBuilder predicate = getPublicPredicate(parameters);
-        log.error(predicate.toString());
         Page<Event> events = eventRepository.findAll(predicate, pageRequest);
-        log.error(events.toString());
         return events.stream()
                 .map(eventMapper::toShortEventDto)
                 .collect(Collectors.toList());
@@ -238,5 +240,18 @@ public class EventService {
         return categoryRepository.findById(catId).orElseThrow(() -> {
             throw new InvalidIdException("Category", catId, LocalDateTime.now());
         });
+    }
+
+    // Статистики
+    private void addHit(HttpServletRequest request) {
+        String app = "ewm-main";
+        String uri = request.getRequestURI();
+        String ip = request.getRemoteAddr();
+
+        RequestHitDto requestHitDto = new RequestHitDto(app,
+                uri,
+                ip,
+                LocalDateTime.now());
+        statClient.saveHit(requestHitDto);
     }
 }
