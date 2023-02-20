@@ -1,7 +1,10 @@
 package ru.practicum.mainservice.event.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,7 @@ import ru.practicum.mainservice.user.model.User;
 import ru.practicum.mainservice.user.repository.UserRepository;
 import ru.practicum.statclient.StatClient;
 import ru.practicum.statdto.RequestHitDto;
+import ru.practicum.statdto.ViewsStatsRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -33,6 +37,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
@@ -58,13 +63,15 @@ public class EventService {
 
     public EventFullDto getPrivateEventById(Long eventId, Long userId) {
         findUser(userId);
-        return eventMapper.toFullEventDto(findEvent(eventId));
+        EventFullDto eventFullDto = eventMapper.toFullEventDto(findEvent(eventId));
+        return setViewsToEventFullDto(eventFullDto);
     }
 
     public EventFullDto getPublicEventById(Long eventId, HttpServletRequest request) {
         Event event = findEvent(eventId);
         addHit(request);
-        return eventMapper.toFullEventDto(event);
+        EventFullDto eventFullDto = eventMapper.toFullEventDto(event);
+        return setViewsToEventFullDto(eventFullDto);
     }
 
     public Collection<EventShortDto> getPublicEventsWithParameters(
@@ -79,6 +86,7 @@ public class EventService {
         Page<Event> events = eventRepository.findAll(predicate, pageRequest);
         List<EventShortDto> eventDtos = events.stream()
                 .map(eventMapper::toShortEventDto)
+                .map(this::setViewsToShortDto)
                 .collect(Collectors.toList());
         switch (sort) {
             case EVENT_DATE:
@@ -130,6 +138,7 @@ public class EventService {
         Page<Event> events = eventRepository.findAll(predicate, pageRequest);
         return events.stream()
                 .map(eventMapper::toFullEventDto)
+                .map(this::setViewsToEventFullDto)
                 .collect(Collectors.toList());
     }
 
@@ -166,6 +175,7 @@ public class EventService {
         PageRequest pageRequest = PageRequest.of(from, size);
         return eventRepository.findAllByInitiator_Id(unitiatorId, pageRequest).stream()
                 .map(eventMapper::toShortEventDto)
+                .map(this::setViewsToShortDto)
                 .collect(Collectors.toList());
     }
 
@@ -190,7 +200,8 @@ public class EventService {
                 break;
         }
         updatedEvent = updateEventCategory(updatedEvent, utilityEvent.getCategory());
-        return eventMapper.toFullEventDto(eventRepository.save(updatedEvent));
+        EventFullDto eventFullDto = eventMapper.toFullEventDto(eventRepository.save(updatedEvent));
+        return setViewsToEventFullDto(eventFullDto);
     }
 
     public EventFullDto updateEventByAdmin(Long eventId, UpdateEventAdminRequest updateEventAdminRequest) {
@@ -222,8 +233,8 @@ public class EventService {
         Event updatedEvent = EventUpdater.updateEventAnnotation(selectedEvent, utilityEvent);
         updatedEvent = updateEventCategory(updatedEvent, utilityEvent.getCategory());
         updatedEvent.setPublishedOn(LocalDateTime.now());
-
-        return eventMapper.toFullEventDto(eventRepository.save(updatedEvent));
+        EventFullDto eventFullDto = eventMapper.toFullEventDto(eventRepository.save(updatedEvent));
+        return setViewsToEventFullDto(eventFullDto);
     }
 
     private Event updateEventCategory(Event event, Long newCatId) {
@@ -264,5 +275,49 @@ public class EventService {
                 ip,
                 LocalDateTime.now());
         statClient.saveHit(requestHitDto);
+    }
+
+    private EventFullDto setViewsToEventFullDto(EventFullDto eventFullDto) {
+        Long eventId = eventFullDto.getId();
+        Event event = findEvent(eventId);
+        LocalDateTime start = event.getCreatedOn();
+        LocalDateTime end = LocalDateTime.now();
+        String[] uris = {"/events/" + eventId.toString()};
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        statClient.getStat(start, end, uris, false).getBody().toString();
+        List<ViewsStatsRequest> stat = objectMapper
+                .convertValue(statClient.getStat(start, end, uris, false).getBody(), new TypeReference<>() {
+                });
+        if (stat.isEmpty()) {
+            eventFullDto.setViews(0);
+        } else {
+            eventFullDto.setViews(stat.get(0).getHits());
+            log.error(stat.get(0).toString());
+        }
+
+        return eventFullDto;
+    }
+
+    private EventShortDto setViewsToShortDto(EventShortDto eventShortDto) {
+        Long eventId = eventShortDto.getId();
+        Event event = findEvent(eventId);
+        LocalDateTime start = event.getCreatedOn();
+        LocalDateTime end = LocalDateTime.now();
+        String[] uris = {"/events/" + eventId.toString()};
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        statClient.getStat(start, end, uris, false).getBody().toString();
+        List<ViewsStatsRequest> stat = objectMapper
+                .convertValue(statClient.getStat(start, end, uris, false).getBody(), new TypeReference<>() {
+                });
+        if (stat.isEmpty()) {
+            eventShortDto.setViews(0);
+        } else {
+            eventShortDto.setViews(stat.get(0).getHits());
+            log.error(stat.get(0).toString());
+        }
+
+        return eventShortDto;
     }
 }
