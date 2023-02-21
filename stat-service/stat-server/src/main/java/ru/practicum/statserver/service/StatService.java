@@ -31,6 +31,7 @@ public class StatService {
         LocalDateTime end = requestViewStatDto.getEnd();
         String[] uris = requestViewStatDto.getUris();
         Boolean unique = requestViewStatDto.getUnique();
+        log.warn(requestViewStatDto.toString());
 
         if (uris == null || uris.length == 0) {
             if (unique == null || unique.equals(false)) {
