@@ -8,7 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainservice.comment.dto.CommentDto;
 import ru.practicum.mainservice.comment.service.CommentService;
-import ru.practicum.mainservice.controllers.admincontrollers.parameters.CommentAdminRequestParameters;
+import ru.practicum.mainservice.controllers.admincontrollers.parameters.AdminCommentRequestParameters;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -34,13 +34,11 @@ public class CommentAdminController {
             @RequestParam(defaultValue = "0", required = false) @PositiveOrZero Integer from,
             @RequestParam(defaultValue = "10", required = false) @Positive Integer size) {
 
-        CommentAdminRequestParameters parameters = CommentAdminRequestParameters.builder()
-                .text(text)
-                .userIds(users)
-                .eventIds(events)
-                .rangeStart(rangeStart)
-                .rangeEnd(rangeEnd)
-                .build();
+        AdminCommentRequestParameters parameters = new AdminCommentRequestParameters(text,
+                users,
+                events,
+                rangeStart,
+                rangeEnd);
 
         log.info("GET-request was received at 'admin/comments' . " +
                 "Get all COMMENT with parameters = {}.", parameters);

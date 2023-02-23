@@ -24,7 +24,7 @@ import ru.practicum.mainservice.event.updater.EventUpdater;
 import ru.practicum.mainservice.event.updater.UtilityEvent;
 import ru.practicum.mainservice.event.validation.EventValidator;
 import ru.practicum.mainservice.exception.InvalidIdException;
-import ru.practicum.mainservice.exception.NonUpdatedEventException;
+import ru.practicum.mainservice.exception.event.NonUpdatedEventException;
 import ru.practicum.mainservice.user.model.User;
 import ru.practicum.mainservice.user.repository.UserRepository;
 import ru.practicum.statclient.StatClient;

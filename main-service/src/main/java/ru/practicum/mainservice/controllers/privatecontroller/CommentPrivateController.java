@@ -10,7 +10,7 @@ import ru.practicum.mainservice.comment.dto.CommentDto;
 import ru.practicum.mainservice.comment.dto.NewCommentDto;
 import ru.practicum.mainservice.comment.dto.UpdateCommentDto;
 import ru.practicum.mainservice.comment.service.CommentService;
-import ru.practicum.mainservice.controllers.privatecontroller.parameters.CommentPrivateRequestParameters;
+import ru.practicum.mainservice.controllers.parameters.BaseCommentRequestParameters;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -34,7 +34,7 @@ public class CommentPrivateController {
         log.info("POST-request was received at 'users/{}/events/{}/comments' . " +
                         "USER with userID = {} on EVENT with eventID = {}: create new COMMENT: {}.",
                 userId, eventId, userId, eventId, newCommentDto);
-        return new ResponseEntity<>(commentService.createCommentOnEvent(userId, eventId, newCommentDto),
+        return new ResponseEntity<>(commentService.createComment(userId, eventId, newCommentDto),
                 HttpStatus.CREATED);
     }
 
@@ -57,7 +57,7 @@ public class CommentPrivateController {
             @RequestParam(defaultValue = "0", required = false) @PositiveOrZero Integer from,
             @RequestParam(defaultValue = "10", required = false) @Positive Integer size) {
 
-        CommentPrivateRequestParameters parameters = CommentPrivateRequestParameters.builder()
+        BaseCommentRequestParameters parameters = BaseCommentRequestParameters.builder()
                 .text(text)
                 .eventIds(events)
                 .rangeStart(rangeStart)

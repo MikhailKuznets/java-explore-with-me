@@ -8,7 +8,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import ru.practicum.mainservice.exception.*;
+import ru.practicum.mainservice.exception.ApiError;
+import ru.practicum.mainservice.exception.DataValidateException;
+import ru.practicum.mainservice.exception.ErrorResponse;
+import ru.practicum.mainservice.exception.InvalidIdException;
+import ru.practicum.mainservice.exception.category.CategoryIsNotEmptyException;
+import ru.practicum.mainservice.exception.comment.IncorrectAuthorCommentException;
+import ru.practicum.mainservice.exception.event.NonUpdatedEventException;
+import ru.practicum.mainservice.exception.request.NonCanceledRequestException;
+import ru.practicum.mainservice.exception.request.NotPendingStatusException;
+import ru.practicum.mainservice.exception.request.ParticipantLimitException;
+import ru.practicum.mainservice.exception.request.UnCreatedRequestException;
 
 import javax.persistence.PersistenceException;
 import java.time.LocalDateTime;
@@ -35,7 +45,8 @@ public class ErrorHandler {
             NonUpdatedEventException.class,
             ParticipantLimitException.class,
             CategoryIsNotEmptyException.class,
-            UnCreatedRequestException.class})
+            UnCreatedRequestException.class,
+            IncorrectAuthorCommentException.class})
     @ResponseStatus(value = HttpStatus.CONFLICT)
     public ErrorResponse handleConflict(final ApiError e) {
         log.error("HTTP status code 409 - " + e.getMessage());
