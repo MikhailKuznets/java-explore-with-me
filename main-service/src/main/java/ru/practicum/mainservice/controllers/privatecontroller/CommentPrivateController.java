@@ -10,7 +10,7 @@ import ru.practicum.mainservice.comment.dto.CommentDto;
 import ru.practicum.mainservice.comment.dto.NewCommentDto;
 import ru.practicum.mainservice.comment.dto.UpdateCommentDto;
 import ru.practicum.mainservice.comment.service.CommentService;
-import ru.practicum.mainservice.controllers.parameters.BaseCommentRequestParameters;
+import ru.practicum.mainservice.controllers.parameters.comment.BaseCommentRequestParameters;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;

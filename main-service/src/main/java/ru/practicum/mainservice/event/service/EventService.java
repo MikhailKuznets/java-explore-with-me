@@ -13,9 +13,10 @@ import ru.practicum.mainservice.category.repository.CategoryRepository;
 import ru.practicum.mainservice.comment.mapper.CommentMapper;
 import ru.practicum.mainservice.comment.model.Comment;
 import ru.practicum.mainservice.comment.repository.CommentRepository;
-import ru.practicum.mainservice.controllers.admincontrollers.parameters.EventAdminRequestParameters;
-import ru.practicum.mainservice.controllers.publiccontrollers.parameters.EventPublicRequestParameters;
-import ru.practicum.mainservice.controllers.publiccontrollers.parameters.EventRequestSort;
+import ru.practicum.mainservice.controllers.parameters.event.BaseEventRequestParameters;
+import ru.practicum.mainservice.controllers.parameters.event.EventAdminRequestParameters;
+import ru.practicum.mainservice.controllers.parameters.event.EventPublicRequestParameters;
+import ru.practicum.mainservice.controllers.parameters.event.EventRequestSort;
 import ru.practicum.mainservice.event.dto.*;
 import ru.practicum.mainservice.event.mapper.EventMapper;
 import ru.practicum.mainservice.event.model.*;
@@ -214,29 +215,19 @@ public class EventService {
 
     // Подготовка предикатов
     private BooleanBuilder getPublicPredicate(EventPublicRequestParameters parameters) {
-        BooleanBuilder predicate = new BooleanBuilder();
+        BooleanBuilder predicate = getBasePredicate(parameters);
 
         String text = parameters.getText();
-        List<Long> catIds = parameters.getCatIds();
         Boolean paid = parameters.getPaid();
-        LocalDateTime rangeStart = parameters.getRangeStart();
-        LocalDateTime rangeEnd = parameters.getRangeEnd();
         Boolean onlyAvailable = parameters.getOnlyAvailable();
 
         if (text != null) {
             predicate.and(QEvent.event.annotation.likeIgnoreCase(text)
                     .or(QEvent.event.description.likeIgnoreCase(text)));
         }
-        if (!catIds.isEmpty()) {
-            predicate.and(QEvent.event.category.id.in(catIds));
-        }
         if (paid != null) {
             predicate.and(QEvent.event.paid.eq(paid));
         }
-
-        predicate.and(QEvent.event.eventDate.after(rangeStart));
-        predicate.and(QEvent.event.eventDate.before(rangeEnd));
-
         if (onlyAvailable) {
             predicate.and(QEvent.event.participantLimit.eq(0)
                     .or(QEvent.event.participantLimit.lt(QEvent.event.confirmedRequests)));
@@ -245,13 +236,10 @@ public class EventService {
     }
 
     private BooleanBuilder getAdminPredicate(EventAdminRequestParameters parameters) {
-        BooleanBuilder predicate = new BooleanBuilder();
+        BooleanBuilder predicate = getBasePredicate(parameters);
 
         List<Long> userIds = parameters.getUserIds();
         List<EventState> states = parameters.getStates();
-        List<Long> catIds = parameters.getCatIds();
-        LocalDateTime rangeStart = parameters.getRangeStart();
-        LocalDateTime rangeEnd = parameters.getRangeEnd();
 
         if (!userIds.isEmpty()) {
             predicate.and(QEvent.event.initiator.id.in(userIds));
@@ -259,15 +247,27 @@ public class EventService {
         if (!states.isEmpty()) {
             predicate.and(QEvent.event.state.in(states));
         }
+
+        return predicate;
+    }
+
+    private BooleanBuilder getBasePredicate(BaseEventRequestParameters parameters) {
+        BooleanBuilder predicate = new BooleanBuilder();
+
+        List<Long> catIds = parameters.getCatIds();
+        LocalDateTime rangeStart = parameters.getRangeStart();
+        LocalDateTime rangeEnd = parameters.getRangeEnd();
+
         if (!catIds.isEmpty()) {
             predicate.and(QEvent.event.category.id.in(catIds));
         }
         if (rangeStart != null) {
-            predicate.and(QEvent.event.category.id.in(catIds));
+            predicate.and(QEvent.event.eventDate.after(rangeStart));
         }
         if (rangeEnd != null) {
             predicate.and(QEvent.event.eventDate.before(rangeEnd));
         }
+
         return predicate;
     }
 

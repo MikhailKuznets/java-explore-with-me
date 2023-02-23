@@ -1,4 +1,4 @@
-package ru.practicum.mainservice.controllers.publiccontrollers.parameters;
+package ru.practicum.mainservice.controllers.parameters.event;
 
 public enum EventRequestSort {
     EVENT_DATE,

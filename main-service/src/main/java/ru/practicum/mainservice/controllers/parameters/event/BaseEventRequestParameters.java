@@ -1,7 +1,6 @@
-package ru.practicum.mainservice.controllers.parameters.comment;
+package ru.practicum.mainservice.controllers.parameters.event;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -14,9 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class BaseCommentRequestParameters implements TimeCheckable {
-    protected String text;
-    protected List<Long> eventIds;
+public class BaseEventRequestParameters implements TimeCheckable {
+    protected List<Long> catIds;
     protected LocalDateTime rangeStart;
     protected LocalDateTime rangeEnd;
 
