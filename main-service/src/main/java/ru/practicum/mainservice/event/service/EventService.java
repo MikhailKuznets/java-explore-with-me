@@ -303,43 +303,40 @@ public class EventService {
         statClient.saveHit(requestHitDto);
     }
 
+    // Установка количества просмотров в EventFullDto
     private EventFullDto setViewsToEventFullDto(EventFullDto eventFullDto) {
         Long eventId = eventFullDto.getId();
-        Event event = findEvent(eventId);
-        LocalDateTime start = event.getCreatedOn();
-        LocalDateTime end = LocalDateTime.now();
-        String[] uris = {"/events/" + eventId.toString()};
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        List<ViewsStatsRequest> stat = objectMapper
-                .convertValue(statClient.getStat(start, end, uris, false).getBody(), new TypeReference<>() {
-                });
-        if (stat.isEmpty()) {
-            eventFullDto.setViews(0);
-        } else {
-            eventFullDto.setViews(stat.get(0).getHits());
-        }
-
+        Integer views = getViews(eventId);
+        eventFullDto.setViews(views);
         return eventFullDto;
     }
 
+    // Установка количества просмотров в EventShortDto
     private EventShortDto setViewsToShortDto(EventShortDto eventShortDto) {
         Long eventId = eventShortDto.getId();
+        Integer views = getViews(eventId);
+        eventShortDto.setViews(views);
+        return eventShortDto;
+    }
+
+    // Получение количества просмотров определенного Эвента
+    private Integer getViews(Long eventId) {
         Event event = findEvent(eventId);
         LocalDateTime start = event.getCreatedOn();
         LocalDateTime end = LocalDateTime.now();
         String[] uris = {"/events/" + eventId.toString()};
         ObjectMapper objectMapper = new ObjectMapper();
+        Integer views = 0;
 
         List<ViewsStatsRequest> stat = objectMapper
                 .convertValue(statClient.getStat(start, end, uris, false).getBody(), new TypeReference<>() {
                 });
-        if (stat.isEmpty()) {
-            eventShortDto.setViews(0);
-        } else {
-            eventShortDto.setViews(stat.get(0).getHits());
+
+        if (!stat.isEmpty()) {
+            views = stat.get(0).getHits();
         }
 
-        return eventShortDto;
+        return views;
     }
+
 }
