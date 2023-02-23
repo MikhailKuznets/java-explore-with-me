@@ -1,25 +1,22 @@
 package ru.practicum.mainservice.controllers.publiccontrollers.parameters;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
+import ru.practicum.mainservice.controllers.parameters.BaseEventRequestParameters;
+import ru.practicum.mainservice.controllers.parameters.TimeCheckable;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class EventPublicRequestParameters {
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
+public class EventPublicRequestParameters extends BaseEventRequestParameters implements TimeCheckable {
     private String text;
-    private List<Long> catIds;
     private Boolean paid;
-    private LocalDateTime rangeStart;
-    private LocalDateTime rangeEnd;
     private Boolean onlyAvailable;
 
+    @Override
     public void checkTime() {
         if (this.rangeStart == null) {
             this.rangeStart = LocalDateTime.now();
