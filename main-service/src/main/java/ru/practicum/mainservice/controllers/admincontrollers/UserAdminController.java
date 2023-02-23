@@ -36,7 +36,7 @@ public class UserAdminController {
             @RequestParam(defaultValue = "0", required = false) @PositiveOrZero Integer from,
             @RequestParam(defaultValue = "10", required = false) @Positive Integer size
     ) {
-        log.info("GET-request was received at 'admin/users?ids={}&from={}&size={}' . Get users.",
+        log.info("GET-request was received at 'admin/users?ids={}&from={}&size={}' . Get USERS.",
                 ids, from, size);
         return new ResponseEntity<>(userService.getUsers(ids, from, size), HttpStatus.OK);
     }
@@ -44,7 +44,7 @@ public class UserAdminController {
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUserById(@PathVariable @Positive Long userId) {
         log.info("DELETE-request was received at 'admin/users/{}' . " +
-                "Delete a USER with UserID = {}.", userId, userId);
+                "Delete a USER with userID = {}.", userId, userId);
         userService.deleteUserById(userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

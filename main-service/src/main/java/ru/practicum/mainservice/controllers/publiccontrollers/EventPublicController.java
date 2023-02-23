@@ -52,7 +52,7 @@ public class EventPublicController {
                 .build();
 
         log.info("GET-request was received at '/events' . " +
-                "GET all events with search parameters  = {}.", eventPublicRequestParameters);
+                "GET all EVENTS with search parameters  = {}.", eventPublicRequestParameters);
 
         return new ResponseEntity<>(eventService.getPublicEventsWithParameters(eventPublicRequestParameters, sort,
                 from, size, request), HttpStatus.OK);
@@ -63,7 +63,7 @@ public class EventPublicController {
             @PathVariable @Positive Long eventId,
             HttpServletRequest request) {
         log.info("GET-request was received at '/events/{}' . " +
-                "Get public information about the event with eventId = {}.", eventId, eventId);
+                "Get public information about EVENT with eventID = {}.", eventId, eventId);
         return new ResponseEntity<>(eventService.getPublicEventById(eventId, request), HttpStatus.OK);
     }
 

@@ -27,17 +27,17 @@ public class CommentPrivateController {
     public ResponseEntity<CommentDto> createCommentToEvent(@PathVariable @Positive Long userId,
                                                            @PathVariable @Positive Long eventId,
                                                            @RequestBody @Valid NewCommentDto newCommentDto) {
-        log.info("POST-request was received at 'users/{userId}/events/{eventId}/comments' . " +
-                        "USER with UserID = {userId} on EVENT with EventID = {eventId}: create new COMMENT: {}."
-                , newCommentDto);
+        log.info("POST-request was received at 'users/{}/events/{}/comments' . " +
+                        "USER with userID = {} on EVENT with eventID = {}: create new COMMENT: {}.",
+                userId, eventId, userId, eventId, newCommentDto);
         return new ResponseEntity<>(commentService.createCommentOnEvent(userId, eventId, newCommentDto),
                 HttpStatus.CREATED);
     }
 
     @GetMapping("/{userId}/comments")
     public ResponseEntity<Collection<CommentDto>> getAllUserComments(@PathVariable @Positive Long userId) {
-        log.info("GET-request was received at 'users/{userId}/comments' . " +
-                "Get all COMMENT by USER with UserID = {userId}.");
+        log.info("GET-request was received at 'users/{}/comments' . Get all COMMENT by USER with userID = {}.",
+                userId, userId);
         return new ResponseEntity<>(commentService.getAllUserComments(userId),
                 HttpStatus.OK);
     }
@@ -47,9 +47,9 @@ public class CommentPrivateController {
             @PathVariable @Positive Long userId,
             @PathVariable @Positive Long commentId,
             @RequestBody UpdateCommentDto updateCommentDto) {
-        log.info("PATCH-request was received at 'users/{userId}/comments/{commentId}' . " +
-                "Patch a COMMENT with CommentID = {commentId}, from USER with userID = {userId}. " +
-                "New Data = {updateCommentDto} .");
+        log.info("PATCH-request was received at 'users/{}/comments/{}' . " +
+                        "Patch a COMMENT with commentID = {}, from USER with userID = {}. New Data = {} .",
+                userId, commentId, commentId, userId, updateCommentDto);
         return new ResponseEntity<>(commentService.updateUserComment(userId, commentId, updateCommentDto),
                 HttpStatus.OK);
     }
@@ -57,8 +57,9 @@ public class CommentPrivateController {
     @DeleteMapping("/{userId}/comments/{commentId}")
     public ResponseEntity<Void> deleteUserCommentById(@PathVariable @Positive Long userId,
                                                       @PathVariable @Positive Long commentId) {
-        log.info("DELETE-request was received at 'users/{userId}/comments/{commentId}' . " +
-                "Delete COMMENT with CommentID = {commentId} by USER with UserId = {userId}");
+        log.info("DELETE-request was received at 'users/{}/comments/{}' . " +
+                        "Delete COMMENT with commentID = {} by USER with UserId = {}",
+                userId, commentId, commentId, userId);
         commentService.deleteUserCommentById(userId, commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

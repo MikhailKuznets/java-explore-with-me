@@ -39,7 +39,7 @@ public class EventPrivateController {
             @RequestParam(defaultValue = "0", required = false) @PositiveOrZero Integer from,
             @RequestParam(defaultValue = "10", required = false) @Positive Integer size) {
         log.info("GET-request was received at 'users/{}/events?from={}&size={}' . " +
-                "GET all the User's events, from User with userId = {}.", userId, from, size, userId);
+                "GET all the user's EVENTS, from USER with userID = {}.", userId, from, size, userId);
         return new ResponseEntity<>(eventService.getAllUserEvents(userId, from, size), HttpStatus.OK);
     }
 
@@ -57,7 +57,7 @@ public class EventPrivateController {
             @PathVariable @Positive Long eventId,
             @RequestBody UpdateEventUserRequest updateEventUserRequest) {
         log.info("PATCH-request was received at 'users/{}/events/{}' . " +
-                        "Patch a EVENT with eventID = {}, from USER with userID = {}. New Data ={}",
+                        "Patch a EVENT with eventID = {}, from USER with userID = {}. New Data = {}",
                 userId, eventId, eventId, userId, updateEventUserRequest);
         return new ResponseEntity<>(eventService.updateEventByUser(eventId, userId, updateEventUserRequest),
                 HttpStatus.OK);

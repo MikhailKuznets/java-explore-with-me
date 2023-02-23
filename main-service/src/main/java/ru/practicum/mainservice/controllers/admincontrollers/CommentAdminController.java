@@ -23,7 +23,7 @@ public class CommentAdminController {
     @GetMapping("/{userId}")
     public ResponseEntity<Collection<CommentDto>> getAllUserCommentsForAdmin(@PathVariable @Positive Long userId) {
         log.info("GET-request was received at 'admin/comments/{}' . " +
-                "Get all COMMENT by USER with UserID = {}.", userId, userId);
+                "Get all COMMENT by USER with userID = {}.", userId, userId);
         return new ResponseEntity<>(commentService.getAllUsersCommentForAdmin(userId),
                 HttpStatus.OK);
     }
@@ -31,7 +31,7 @@ public class CommentAdminController {
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> deleteCommentById(@PathVariable @Positive Long commentId) {
         log.info("DELETE-request was received at 'admin/comments/{}' . " +
-                "Delete a COMMENT with CommentID = {}.", commentId, commentId);
+                "Delete a COMMENT with commentID = {}.", commentId, commentId);
         commentService.deleteCommentById(commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

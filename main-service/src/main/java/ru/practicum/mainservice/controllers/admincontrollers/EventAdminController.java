@@ -57,7 +57,7 @@ public class EventAdminController {
                 .build();
 
         log.info("GET-request was received at 'admin/events' . " +
-                "GET all events with search parameters  = {}.", parameters);
+                "GET all EVENTS with search parameters  = {}.", parameters);
 
         return new ResponseEntity<>(eventService.getAdminEventsWithParameters(parameters, from, size), HttpStatus.OK);
     }
