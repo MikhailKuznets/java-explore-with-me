@@ -8,9 +8,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainservice.comment.dto.CommentDto;
 import ru.practicum.mainservice.comment.service.CommentService;
+import ru.practicum.mainservice.controllers.admincontrollers.parameters.CommentAdminRequestParameters;
 
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/admin/comments")
@@ -20,11 +24,27 @@ import java.util.Collection;
 public class CommentAdminController {
     private final CommentService commentService;
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<Collection<CommentDto>> getAllUserCommentsForAdmin(@PathVariable @Positive Long userId) {
-        log.info("GET-request was received at 'admin/comments/{}' . " +
-                "Get all COMMENT by USER with userID = {}.", userId, userId);
-        return new ResponseEntity<>(commentService.getAllUsersCommentForAdmin(userId),
+    @GetMapping
+    public ResponseEntity<Collection<CommentDto>> getCommentsForAdmin(
+            @RequestParam(required = false) String text,
+            @RequestParam(defaultValue = "", required = false) List<Long> users,
+            @RequestParam(defaultValue = "", required = false) List<Long> events,
+            @RequestParam(required = false) LocalDateTime rangeStart,
+            @RequestParam(required = false) LocalDateTime rangeEnd,
+            @RequestParam(defaultValue = "0", required = false) @PositiveOrZero Integer from,
+            @RequestParam(defaultValue = "10", required = false) @Positive Integer size) {
+
+        CommentAdminRequestParameters parameters = CommentAdminRequestParameters.builder()
+                .text(text)
+                .userIds(users)
+                .eventIds(events)
+                .rangeStart(rangeStart)
+                .rangeEnd(rangeEnd)
+                .build();
+
+        log.info("GET-request was received at 'admin/comments' . " +
+                "Get all COMMENT with parameters = {}.", parameters);
+        return new ResponseEntity<>(commentService.getCommentForAdmin(parameters, from, size),
                 HttpStatus.OK);
     }
 

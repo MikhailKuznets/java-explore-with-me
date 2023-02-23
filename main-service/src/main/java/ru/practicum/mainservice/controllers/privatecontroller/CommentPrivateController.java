@@ -10,10 +10,14 @@ import ru.practicum.mainservice.comment.dto.CommentDto;
 import ru.practicum.mainservice.comment.dto.NewCommentDto;
 import ru.practicum.mainservice.comment.dto.UpdateCommentDto;
 import ru.practicum.mainservice.comment.service.CommentService;
+import ru.practicum.mainservice.controllers.privatecontroller.parameters.CommentPrivateRequestParameters;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -34,11 +38,35 @@ public class CommentPrivateController {
                 HttpStatus.CREATED);
     }
 
-    @GetMapping("/{userId}/comments")
+    @GetMapping("/{userId}/comments/own")
     public ResponseEntity<Collection<CommentDto>> getAllUserComments(@PathVariable @Positive Long userId) {
-        log.info("GET-request was received at 'users/{}/comments' . Get all COMMENT by USER with userID = {}.",
+        log.info("GET-request was received at 'users/{}/comments' . " +
+                        "Get all own COMMENTS by USER with userId = {} .",
                 userId, userId);
         return new ResponseEntity<>(commentService.getAllUserComments(userId),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/{userId}/comments")
+    public ResponseEntity<Collection<CommentDto>> getCommentsForUser(
+            @PathVariable @Positive Long userId,
+            @RequestParam(required = false) String text,
+            @RequestParam(defaultValue = "", required = false) List<Long> events,
+            @RequestParam(required = false) LocalDateTime rangeStart,
+            @RequestParam(required = false) LocalDateTime rangeEnd,
+            @RequestParam(defaultValue = "0", required = false) @PositiveOrZero Integer from,
+            @RequestParam(defaultValue = "10", required = false) @Positive Integer size) {
+
+        CommentPrivateRequestParameters parameters = CommentPrivateRequestParameters.builder()
+                .text(text)
+                .eventIds(events)
+                .rangeStart(rangeStart)
+                .rangeEnd(rangeEnd)
+                .build();
+
+        log.info("GET-request was received at 'users/{}/comments' . " +
+                "Get for USER with userID all COMMENT with parameters = {}.", userId, parameters);
+        return new ResponseEntity<>(commentService.getCommentForUser(userId, parameters, from, size),
                 HttpStatus.OK);
     }
 
@@ -63,4 +91,5 @@ public class CommentPrivateController {
         commentService.deleteUserCommentById(userId, commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 }

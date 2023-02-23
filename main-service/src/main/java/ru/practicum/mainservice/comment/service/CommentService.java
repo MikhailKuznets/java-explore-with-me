@@ -4,8 +4,9 @@ import org.springframework.stereotype.Service;
 import ru.practicum.mainservice.comment.dto.CommentDto;
 import ru.practicum.mainservice.comment.dto.NewCommentDto;
 import ru.practicum.mainservice.comment.dto.UpdateCommentDto;
+import ru.practicum.mainservice.controllers.admincontrollers.parameters.CommentAdminRequestParameters;
+import ru.practicum.mainservice.controllers.privatecontroller.parameters.CommentPrivateRequestParameters;
 
-import javax.validation.constraints.Positive;
 import java.util.Collection;
 
 @Service
@@ -13,7 +14,7 @@ public class CommentService {
     public void deleteCommentById(Long commentId) {
     }
 
-    public Collection<CommentDto> getAllUsersCommentForAdmin(Long userId) {
+    public Collection<CommentDto> getCommentForAdmin(Long userId) {
         return null;
     }
 
@@ -25,11 +26,24 @@ public class CommentService {
         return null;
     }
 
-    public CommentDto updateUserComment(Long userId, @Positive Long commentId, UpdateCommentDto updateCommentDto) {
+    public CommentDto updateUserComment(Long userId, Long commentId, UpdateCommentDto updateCommentDto) {
         return null;
     }
 
     public void deleteUserCommentById(Long userId, Long commentId) {
 
+    }
+
+    public Collection<CommentDto> getCommentForAdmin(CommentAdminRequestParameters parameters,
+                                                     Integer from,
+                                                     Integer size) {
+        return null;
+    }
+
+    public Collection<CommentDto> getCommentForUser(Long userId,
+                                                    CommentPrivateRequestParameters parameters,
+                                                    Integer from,
+                                                    Integer size) {
+        return null;
     }
 }
