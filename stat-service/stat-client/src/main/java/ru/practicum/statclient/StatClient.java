@@ -47,7 +47,7 @@ public class StatClient extends BaseClient {
                 "end", end,
                 "uris", uris,
                 "unique", unique);
-        return get(STAT_API_PREFIX, parameters);
+        return get(STAT_API_PREFIX + "?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
     }
 
 }
