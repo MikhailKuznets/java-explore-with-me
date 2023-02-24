@@ -58,7 +58,7 @@ public class ErrorHandler {
             MissingServletRequestParameterException.class
     })
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleUnknownBookingState(final MethodArgumentTypeMismatchException e) {
+    public ErrorResponse handleUnknownBookingState(final Exception e) {
         log.error("HTTP status code 400 - {}", e.getMessage());
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage(),
                 "TIncorrectly made request.", LocalDateTime.now());

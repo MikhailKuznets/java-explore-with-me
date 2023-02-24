@@ -74,7 +74,7 @@ public class CommentPrivateController {
     public ResponseEntity<CommentDto> updateUserComment(
             @PathVariable @Positive Long userId,
             @PathVariable @Positive Long commentId,
-            @RequestBody UpdateCommentDto updateCommentDto) {
+            @RequestBody @Valid UpdateCommentDto updateCommentDto) {
         log.info("PATCH-request was received at 'users/{}/comments/{}' . " +
                         "Patch a COMMENT with commentID = {}, from USER with userID = {}. New Data = {} .",
                 userId, commentId, commentId, userId, updateCommentDto);

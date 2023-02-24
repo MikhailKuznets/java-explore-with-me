@@ -57,10 +57,16 @@ public class CommentService {
     // PRIVATE-CONTROLLER
 
     public CommentDto createComment(Long userId, Long eventId, NewCommentDto newCommentDto) {
-        findUser(userId);
-        findEvent(eventId);
+        User author = findUser(userId);
+        Event event = findEvent(eventId);
 
-        Comment newComment = commentMapper.toComment(newCommentDto);
+        Comment newComment = Comment.builder()
+                .text(newCommentDto.getText())
+                .event(event)
+                .author(author)
+                .created(LocalDateTime.now())
+                .build();
+
         return commentMapper.toCommentDto(commentRepository.save(newComment));
     }
 
