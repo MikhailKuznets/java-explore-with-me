@@ -4,6 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.mainservice.comment.dto.CommentDto;
 import ru.practicum.mainservice.comment.dto.NewCommentDto;
@@ -24,12 +25,14 @@ import ru.practicum.mainservice.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CommentService {
+    private static final Sort COMMENT_ID_DESC_SORT = Sort.by(Sort.Direction.ASC, "id");
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
@@ -45,7 +48,7 @@ public class CommentService {
                                                      Integer from,
                                                      Integer size) {
         parameters.checkTime();
-        PageRequest pageRequest = PageRequest.of(from, size);
+        PageRequest pageRequest = PageRequest.of(from, size, COMMENT_ID_DESC_SORT);
         BooleanBuilder predicate = getAdminPredicate(parameters);
 
         Page<Comment> comments = commentRepository.findAll(predicate, pageRequest);
@@ -70,12 +73,18 @@ public class CommentService {
         return commentMapper.toCommentDto(commentRepository.save(newComment));
     }
 
+    public CommentDto getCommentById(Long userId, Long commentId) {
+        findUser(userId);
+        return commentMapper.toCommentDto(findComment(commentId));
+    }
+
     public Collection<CommentDto> getAllUserComments(Long userId) {
         findUser(userId);
 
         Collection<Comment> comments = commentRepository.findAllByAuthor_Id(userId);
         return comments.stream()
                 .map(commentMapper::toCommentDto)
+                .sorted(Comparator.comparing(CommentDto::getId))
                 .collect(Collectors.toList());
     }
 
@@ -112,7 +121,7 @@ public class CommentService {
                                                     Integer from,
                                                     Integer size) {
         findUser(userId);
-        PageRequest pageRequest = PageRequest.of(from, size);
+        PageRequest pageRequest = PageRequest.of(from, size, COMMENT_ID_DESC_SORT);
         BooleanBuilder predicate = getPredicate(parameters);
         Page<Comment> comments = commentRepository.findAll(predicate, pageRequest);
         return comments.stream()
@@ -142,7 +151,7 @@ public class CommentService {
         LocalDateTime rangeEnd = parameters.getRangeEnd();
 
         if (text != null) {
-            predicate.and(QComment.comment.text.likeIgnoreCase(text));
+            predicate.and(QComment.comment.text.containsIgnoreCase(text));
         }
         if (!eventIds.isEmpty()) {
             predicate.and(QComment.comment.event.id.in(eventIds));

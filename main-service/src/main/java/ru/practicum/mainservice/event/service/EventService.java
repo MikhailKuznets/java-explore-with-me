@@ -222,8 +222,8 @@ public class EventService {
         Boolean onlyAvailable = parameters.getOnlyAvailable();
 
         if (text != null) {
-            predicate.and(QEvent.event.annotation.likeIgnoreCase(text)
-                    .or(QEvent.event.description.likeIgnoreCase(text)));
+            predicate.and(QEvent.event.annotation.containsIgnoreCase(text)
+                    .or(QEvent.event.description.containsIgnoreCase(text)));
         }
         if (paid != null) {
             predicate.and(QEvent.event.paid.eq(paid));

@@ -38,6 +38,16 @@ public class CommentPrivateController {
                 HttpStatus.CREATED);
     }
 
+    @GetMapping("/{userId}/comments/{commentId}")
+    public ResponseEntity<CommentDto> getCommentById(@PathVariable @Positive Long userId,
+                                                                 @PathVariable @Positive Long commentId) {
+        log.info("GET-request was received at 'users/{}/comments/{}' . " +
+                        "Get COMMENT with commentId = {} by USER with userId = {} .",
+                userId, commentId, commentId, userId);
+        return new ResponseEntity<>(commentService.getCommentById(userId, commentId),
+                HttpStatus.OK);
+    }
+
     @GetMapping("/{userId}/comments/own")
     public ResponseEntity<Collection<CommentDto>> getAllUserComments(@PathVariable @Positive Long userId) {
         log.info("GET-request was received at 'users/{}/comments' . " +
