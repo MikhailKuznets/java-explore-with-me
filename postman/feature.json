@@ -1,9 +1,8 @@
 {
 	"info": {
-		"_postman_id": "dd30ac3a-18b6-432a-965f-881d7f8a3fe1",
+		"_postman_id": "51e3f9f4-fc8c-49d8-bcba-01129358486b",
 		"name": "Test Explore With Me - Feature \"Comments\"",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "26009776"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
@@ -299,18 +298,16 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": null\r\n}"
+					"raw": "{\r\n    \"eventId\": 1,\r\n    \"text\": null\r\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/events/:eventId/comments",
+					"raw": "{{baseUrl}}/users/:userId/comments",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"users",
 						":userId",
-						"events",
-						":eventId",
 						"comments"
 					],
 					"variable": [
@@ -318,11 +315,6 @@
 							"key": "userId",
 							"value": "1",
 							"description": "(Required) id текущего пользователя"
-						},
-						{
-							"key": "eventId",
-							"value": "1",
-							"description": "(Required) id события"
 						}
 					]
 				}
@@ -372,18 +364,16 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"       \"\r\n}"
+					"raw": "{\r\n    \"eventId\": 1,\r\n    \"text\": \"       \"\r\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/events/:eventId/comments",
+					"raw": "{{baseUrl}}/users/:userId/comments",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"users",
 						":userId",
-						"events",
-						":eventId",
 						"comments"
 					],
 					"variable": [
@@ -391,11 +381,6 @@
 							"key": "userId",
 							"value": "1",
 							"description": "(Required) id текущего пользователя"
-						},
-						{
-							"key": "eventId",
-							"value": "1",
-							"description": "(Required) id события"
 						}
 					]
 				}
@@ -445,18 +430,16 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"New comment\"\r\n}"
+					"raw": "{\r\n    \"eventId\": 1,\r\n    \"text\": \"New comment\"\r\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/events/:eventId/comments",
+					"raw": "{{baseUrl}}/users/:userId/comments",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"users",
 						":userId",
-						"events",
-						":eventId",
 						"comments"
 					],
 					"variable": [
@@ -464,11 +447,6 @@
 							"key": "userId",
 							"value": "999",
 							"description": "(Required) id текущего пользователя"
-						},
-						{
-							"key": "eventId",
-							"value": "1",
-							"description": "(Required) id события"
 						}
 					]
 				}
@@ -518,18 +496,16 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"New comment\"\r\n}"
+					"raw": "{\r\n    \"eventId\": 999,\r\n    \"text\": \"New comment\"\r\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/events/:eventId/comments",
+					"raw": "{{baseUrl}}/users/:userId/comments",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"users",
 						":userId",
-						"events",
-						":eventId",
 						"comments"
 					],
 					"variable": [
@@ -537,11 +513,6 @@
 							"key": "userId",
 							"value": "1",
 							"description": "(Required) id текущего пользователя"
-						},
-						{
-							"key": "eventId",
-							"value": "999",
-							"description": "(Required) id события"
 						}
 					]
 				}
@@ -607,18 +578,16 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"New comment\"\r\n}"
+					"raw": "{\r\n    \"eventId\": 38,\r\n    \"text\": \"New comment\"\r\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/events/:eventId/comments",
+					"raw": "{{baseUrl}}/users/:userId/comments",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"users",
 						":userId",
-						"events",
-						":eventId",
 						"comments"
 					],
 					"variable": [
@@ -626,11 +595,6 @@
 							"key": "userId",
 							"value": "63",
 							"description": "(Required) id текущего пользователя"
-						},
-						{
-							"key": "eventId",
-							"value": "38",
-							"description": "(Required) id события"
 						}
 					]
 				}
@@ -851,18 +815,16 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"Second comment\"\r\n}"
+					"raw": "{\r\n    \"eventId\": 38,\r\n    \"text\": \"Second comment\"\r\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/events/:eventId/comments",
+					"raw": "{{baseUrl}}/users/:userId/comments",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"users",
 						":userId",
-						"events",
-						":eventId",
 						"comments"
 					],
 					"variable": [
@@ -870,11 +832,6 @@
 							"key": "userId",
 							"value": "63",
 							"description": "(Required) id текущего пользователя"
-						},
-						{
-							"key": "eventId",
-							"value": "38",
-							"description": "(Required) id события"
 						}
 					]
 				}
@@ -939,18 +896,16 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"Third comment\"\r\n}"
+					"raw": "{\r\n    \"eventId\": 37,\r\n    \"text\": \"Third comment\"\r\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/events/:eventId/comments",
+					"raw": "{{baseUrl}}/users/:userId/comments",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"users",
 						":userId",
-						"events",
-						":eventId",
 						"comments"
 					],
 					"variable": [
@@ -958,11 +913,6 @@
 							"key": "userId",
 							"value": "63",
 							"description": "(Required) id текущего пользователя"
-						},
-						{
-							"key": "eventId",
-							"value": "37",
-							"description": "(Required) id события"
 						}
 					]
 				}
@@ -1027,18 +977,16 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"4 comment\"\r\n}"
+					"raw": "{\r\n    \"eventId\": 38,\r\n    \"text\": \"4 comment\"\r\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/events/:eventId/comments",
+					"raw": "{{baseUrl}}/users/:userId/comments",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"users",
 						":userId",
-						"events",
-						":eventId",
 						"comments"
 					],
 					"variable": [
@@ -1046,11 +994,6 @@
 							"key": "userId",
 							"value": "62",
 							"description": "(Required) id текущего пользователя"
-						},
-						{
-							"key": "eventId",
-							"value": "38",
-							"description": "(Required) id события"
 						}
 					]
 				}
@@ -1100,28 +1043,23 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": null\r\n}"
+					"raw": "{\r\n    \"commentId\": 1,\r\n    \"text\": null\r\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/comments/:comId",
+					"raw": "{{baseUrl}}/users/:userId/comments",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"users",
 						":userId",
-						"comments",
-						":comId"
+						"comments"
 					],
 					"variable": [
 						{
 							"key": "userId",
 							"value": "1",
 							"description": "(Required) id текущего пользователя"
-						},
-						{
-							"key": "comId",
-							"value": "1"
 						}
 					]
 				}
@@ -1171,28 +1109,23 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"        \"\r\n}"
+					"raw": "{\r\n    \"commentId\": 1,\r\n    \"text\": \"        \"\r\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/comments/:comId",
+					"raw": "{{baseUrl}}/users/:userId/comments",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"users",
 						":userId",
-						"comments",
-						":comId"
+						"comments"
 					],
 					"variable": [
 						{
 							"key": "userId",
 							"value": "1",
 							"description": "(Required) id текущего пользователя"
-						},
-						{
-							"key": "comId",
-							"value": "1"
 						}
 					]
 				}
@@ -1242,28 +1175,23 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"Updated comment\"\r\n}"
+					"raw": "{\r\n    \"commentId\": 999,\r\n    \"text\": \"Updated comment\"\r\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/comments/:comId",
+					"raw": "{{baseUrl}}/users/:userId/comments",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"users",
 						":userId",
-						"comments",
-						":comId"
+						"comments"
 					],
 					"variable": [
 						{
 							"key": "userId",
 							"value": "1",
 							"description": "(Required) id текущего пользователя"
-						},
-						{
-							"key": "comId",
-							"value": "999"
 						}
 					]
 				}
@@ -1313,28 +1241,23 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"Updated comment\"\r\n}"
+					"raw": "{\r\n    \"commentId\": 1,\r\n    \"text\": \"Updated comment\"\r\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/comments/:comId",
+					"raw": "{{baseUrl}}/users/:userId/comments",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"users",
 						":userId",
-						"comments",
-						":comId"
+						"comments"
 					],
 					"variable": [
 						{
 							"key": "userId",
 							"value": "999",
 							"description": "(Required) id текущего пользователя"
-						},
-						{
-							"key": "comId",
-							"value": "1"
 						}
 					]
 				}
@@ -1384,28 +1307,23 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"Updated comment\"\r\n}"
+					"raw": "{\r\n    \"commentId\": 1,\r\n    \"text\": \"Updated comment\"\r\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/comments/:comId",
+					"raw": "{{baseUrl}}/users/:userId/comments",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"users",
 						":userId",
-						"comments",
-						":comId"
+						"comments"
 					],
 					"variable": [
 						{
 							"key": "userId",
 							"value": "2",
 							"description": "(Required) id текущего пользователя"
-						},
-						{
-							"key": "comId",
-							"value": "1"
 						}
 					]
 				}
@@ -1455,28 +1373,23 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"Updated comment\"\r\n}"
+					"raw": "{\r\n    \"commentId\": 3,\r\n    \"text\": \"Updated comment\"\r\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/comments/:comId",
+					"raw": "{{baseUrl}}/users/:userId/comments",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"users",
 						":userId",
-						"comments",
-						":comId"
+						"comments"
 					],
 					"variable": [
 						{
 							"key": "userId",
 							"value": "63",
 							"description": "(Required) id текущего пользователя"
-						},
-						{
-							"key": "comId",
-							"value": "3"
 						}
 					]
 				}

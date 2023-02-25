@@ -5,7 +5,7 @@ Template repository for ExploreWithMe project.
 https://github.com/MikhailKuznets/java-explore-with-me/pull/3
 
 Тесты Postman feature.json зависимы от Postman-тестов основного сервиса и сервиса статистики.
-Запускать в последовательности:
+Запускать в последовательности соответствующей GitHub Actions:
 1) ewm-main-service.json
 2) ewm-stat-service.json
 3) feature.json
