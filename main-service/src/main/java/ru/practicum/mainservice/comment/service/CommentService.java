@@ -38,10 +38,33 @@ public class CommentService {
     private final EventRepository eventRepository;
     private final CommentMapper commentMapper;
 
+    // PUBLIC-CONTROLLER
+    public CommentDto getCommentByPublic(Long commentId) {
+        Comment comment = findComment(commentId);
+        return commentMapper.toCommentDto(comment);
+    }
+
+    public List<CommentDto> getEventCommentsByPublic(Long eventId) {
+        findEvent(eventId);
+        return commentRepository.findAllByEvent_Id(eventId).stream()
+                .sorted(Comparator.comparing(Comment::getId))
+                .map(commentMapper::toCommentDto)
+                .collect(Collectors.toList());
+    }
+
     // ADMIN-CONTROLLER
-    public void deleteCommentById(Long commentId) {
-        findComment(commentId);
+    public CommentDto deleteCommentByAdmin(Long commentId) {
+        Comment deletedComment = findComment(commentId);
         commentRepository.deleteById(commentId);
+        return commentMapper.toCommentDto(deletedComment);
+    }
+
+    public CommentDto updateCommentByAdmin(UpdateCommentDto updateCommentDto) {
+        Long commentId = updateCommentDto.getCommentId();
+        Comment selectedComment = findComment(commentId);
+        String newText = updateCommentDto.getText();
+        selectedComment.setText(newText);
+        return commentMapper.toCommentDto(commentRepository.save(selectedComment));
     }
 
     public Collection<CommentDto> getCommentForAdmin(AdminCommentRequestParameters parameters,
@@ -59,8 +82,9 @@ public class CommentService {
 
     // PRIVATE-CONTROLLER
 
-    public CommentDto createComment(Long userId, Long eventId, NewCommentDto newCommentDto) {
+    public CommentDto createComment(Long userId, NewCommentDto newCommentDto) {
         User author = findUser(userId);
+        Long eventId = newCommentDto.getEventId();
         Event event = findEvent(eventId);
 
         Comment newComment = Comment.builder()
@@ -78,7 +102,16 @@ public class CommentService {
         return commentMapper.toCommentDto(findComment(commentId));
     }
 
-    public Collection<CommentDto> getAllUserComments(Long userId) {
+    public List<CommentDto> getEventComments(Long userId, Long eventId) {
+        findEvent(eventId);
+        findUser(userId);
+        Collection<Comment> comments = commentRepository.findAllByEvent_Id(eventId);
+        return comments.stream()
+                .map(commentMapper::toCommentDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<CommentDto> getAllUserComments(Long userId) {
         findUser(userId);
 
         Collection<Comment> comments = commentRepository.findAllByAuthor_Id(userId);
@@ -88,8 +121,9 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
-    public CommentDto updateUserComment(Long userId, Long commentId, UpdateCommentDto updateCommentDto) {
+    public CommentDto updateUserComment(Long userId, UpdateCommentDto updateCommentDto) {
         findUser(userId);
+        Long commentId = updateCommentDto.getCommentId();
         Comment selectedComment = findComment(commentId);
         User author = selectedComment.getAuthor();
 
@@ -104,7 +138,7 @@ public class CommentService {
         return commentMapper.toCommentDto(commentRepository.save(selectedComment));
     }
 
-    public void deleteUserCommentById(Long userId, Long commentId) {
+    public CommentDto deleteUserCommentById(Long userId, Long commentId) {
         findUser(userId);
         Comment selectedComment = findComment(commentId);
         User author = selectedComment.getAuthor();
@@ -114,6 +148,7 @@ public class CommentService {
                     LocalDateTime.now());
         }
         commentRepository.deleteById(commentId);
+        return commentMapper.toCommentDto(selectedComment);
     }
 
     public Collection<CommentDto> getCommentForUser(Long userId,

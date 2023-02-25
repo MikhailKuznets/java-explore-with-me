@@ -3,13 +3,14 @@ package ru.practicum.mainservice.controllers.admincontrollers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainservice.comment.dto.CommentDto;
+import ru.practicum.mainservice.comment.dto.UpdateCommentDto;
 import ru.practicum.mainservice.comment.service.CommentService;
 import ru.practicum.mainservice.controllers.parameters.comment.AdminCommentRequestParameters;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
@@ -25,7 +26,8 @@ public class CommentAdminController {
     private final CommentService commentService;
 
     @GetMapping
-    public ResponseEntity<Collection<CommentDto>> getCommentsForAdmin(
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<CommentDto> getCommentsForAdmin(
             @RequestParam(required = false) String text,
             @RequestParam(defaultValue = "", required = false) List<Long> users,
             @RequestParam(defaultValue = "", required = false) List<Long> events,
@@ -42,15 +44,23 @@ public class CommentAdminController {
 
         log.info("GET-request was received at 'admin/comments' . " +
                 "Get all COMMENT with parameters = {}.", parameters);
-        return new ResponseEntity<>(commentService.getCommentForAdmin(parameters, from, size),
-                HttpStatus.OK);
+        return commentService.getCommentForAdmin(parameters, from, size);
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> deleteCommentById(@PathVariable @Positive Long commentId) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public CommentDto deleteComment(@PathVariable @Positive long commentId) {
         log.info("DELETE-request was received at 'admin/comments/{}' . " +
-                "Delete a COMMENT with commentID = {}.", commentId, commentId);
-        commentService.deleteCommentById(commentId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                "Delete by admin COMMENT with commentID = {}.", commentId, commentId);
+        return commentService.deleteCommentByAdmin(commentId);
+    }
+
+    @PatchMapping
+    @ResponseStatus(HttpStatus.OK)
+    public CommentDto updateComment(@RequestBody @Valid UpdateCommentDto updateCommentDto) {
+        log.info("PATCH-request was received at 'admin/comments' . " +
+                        "Patch by admin COMMENT, new Data = {} .",
+                updateCommentDto);
+        return commentService.updateCommentByAdmin(updateCommentDto);
     }
 }

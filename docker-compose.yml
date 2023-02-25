@@ -25,6 +25,7 @@ services:
       - POSTGRES_PASSWORD=root
     volumes:
       - /var/lib/db/data/ewm-stat
+    restart: on-failure
 
   ewm-service:
     build: main-service
@@ -52,3 +53,4 @@ services:
       - POSTGRES_PASSWORD=root
     volumes:
       - /var/lib/db/data/ewm-main
+    restart: on-failure
