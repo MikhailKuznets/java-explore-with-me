@@ -2,7 +2,6 @@ package ru.practicum.mainservice.comment.service;
 
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -32,7 +31,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class CommentService {
     private static final Sort COMMENT_ID_DESC_SORT = Sort.by(Sort.Direction.ASC, "id");
     private final CommentRepository commentRepository;
@@ -59,7 +57,6 @@ public class CommentService {
         Comment deletedComment = findComment(commentId);
         CommentDto commentDto = commentMapper.toCommentDto(deletedComment);
         commentRepository.deleteById(commentId);
-        log.error(commentDto.toString());
         return commentDto;
     }
 
@@ -153,7 +150,6 @@ public class CommentService {
         }
         CommentDto commentDto = commentMapper.toCommentDto(selectedComment);
         commentRepository.deleteById(commentId);
-        log.error(commentDto.toString());
         return commentDto;
     }
 
