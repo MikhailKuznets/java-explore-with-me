@@ -95,8 +95,8 @@ public class CommentPrivateController {
     }
 
     @DeleteMapping("/{userId}/comments/{commentId}")
-    public @ResponseBody ResponseEntity<CommentDto> deleteComment(@PathVariable @Positive long userId,
-                                                                  @PathVariable @Positive long commentId) {
+    public ResponseEntity<CommentDto> deleteComment(@PathVariable @Positive long userId,
+                                                    @PathVariable @Positive long commentId) {
         log.info("DELETE-request was received at 'users/{}/comments/{}' . " +
                         "Delete COMMENT with commentID = {} by USER with UserId = {}",
                 userId, commentId, commentId, userId);
