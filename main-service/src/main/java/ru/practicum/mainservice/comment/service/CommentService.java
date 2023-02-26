@@ -2,6 +2,7 @@ package ru.practicum.mainservice.comment.service;
 
 import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CommentService {
     private static final Sort COMMENT_ID_DESC_SORT = Sort.by(Sort.Direction.ASC, "id");
     private final CommentRepository commentRepository;
@@ -55,8 +57,10 @@ public class CommentService {
     // ADMIN-CONTROLLER
     public CommentDto deleteCommentByAdmin(Long commentId) {
         Comment deletedComment = findComment(commentId);
+        CommentDto commentDto = commentMapper.toCommentDto(deletedComment);
         commentRepository.deleteById(commentId);
-        return commentMapper.toCommentDto(deletedComment);
+        log.error(commentDto.toString());
+        return commentDto;
     }
 
     public CommentDto updateCommentByAdmin(UpdateCommentDto updateCommentDto) {
@@ -147,8 +151,10 @@ public class CommentService {
             throw new IncorrectAuthorCommentException("You can't delete someone else's comment",
                     LocalDateTime.now());
         }
+        CommentDto commentDto = commentMapper.toCommentDto(selectedComment);
         commentRepository.deleteById(commentId);
-        return commentMapper.toCommentDto(selectedComment);
+        log.error(commentDto.toString());
+        return commentDto;
     }
 
     public Collection<CommentDto> getCommentForUser(Long userId,

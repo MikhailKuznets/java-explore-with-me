@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "51e3f9f4-fc8c-49d8-bcba-01129358486b",
+		"_postman_id": "84c0239b-442c-4bb1-a467-02cc9372808c",
 		"name": "Test Explore With Me - Feature \"Comments\"",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26009776"
 	},
 	"item": [
 		{
@@ -255,7 +256,7 @@
 			]
 		},
 		{
-			"name": "ERROR: Добавление  комментария с text = null",
+			"name": "PRIVAT: ERROR: Добавление  комментария с text = null",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -322,7 +323,7 @@
 			"response": []
 		},
 		{
-			"name": "ERROR: Добавление  комментария с text = blank",
+			"name": "PRIVAT: ERROR: Добавление  комментария с text = blank",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -388,7 +389,7 @@
 			"response": []
 		},
 		{
-			"name": "ERROR: Добавление  комментария от несуществующего пользователя",
+			"name": "PRIVAT: ERROR: Добавление  комментария от несуществующего пользователя",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -454,7 +455,7 @@
 			"response": []
 		},
 		{
-			"name": "ERROR: Добавление  комментария к несуществующему событию",
+			"name": "PRIVAT: ERROR: Добавление  комментария к несуществующему событию",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -520,7 +521,7 @@
 			"response": []
 		},
 		{
-			"name": "Корректное добавление комментария №1",
+			"name": "PRIVAT: Корректное добавление комментария №1",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -602,7 +603,7 @@
 			"response": []
 		},
 		{
-			"name": "Проверка создания комментария: получение комментария по Id",
+			"name": "PRIVAT: Проверка создания комментария: получение комментария по Id",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -685,7 +686,7 @@
 			"response": []
 		},
 		{
-			"name": "Проверка наличия списка комментрариев у мероприятия",
+			"name": "PRIVAT: Проверка наличия списка комментрариев у мероприятия",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -757,7 +758,7 @@
 			"response": []
 		},
 		{
-			"name": "Добавление комментария №2",
+			"name": "PRIVAT: Добавление комментария №2",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -839,7 +840,7 @@
 			"response": []
 		},
 		{
-			"name": "Добавление комментария №3",
+			"name": "PRIVAT: Добавление комментария №3",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -920,7 +921,7 @@
 			"response": []
 		},
 		{
-			"name": "Добавление комментария №4",
+			"name": "PRIVAT: Добавление комментария №4",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1001,7 +1002,7 @@
 			"response": []
 		},
 		{
-			"name": "ERROR: Редактирование комментария на text = null",
+			"name": "PRIVAT: ERROR: Редактирование комментария на text = null",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1067,7 +1068,7 @@
 			"response": []
 		},
 		{
-			"name": "ERROR: Редактирование комментария на text = blank",
+			"name": "PRIVAT: ERROR: Редактирование комментария на text = blank",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1133,7 +1134,7 @@
 			"response": []
 		},
 		{
-			"name": "ERROR: Редактирование несуществующего комментария",
+			"name": "PRIVAT: ERROR: Редактирование несуществующего комментария",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1199,7 +1200,7 @@
 			"response": []
 		},
 		{
-			"name": "ERROR: Запрос на редактирование комментария от несуществущего пользователя",
+			"name": "PRIVAT: ERROR: Редактирование комментария от несуществущего пользователя",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1265,7 +1266,7 @@
 			"response": []
 		},
 		{
-			"name": "ERROR: Запрос на редактирование  чужого комментария",
+			"name": "PRIVAT: ERROR: Редактирование  чужого комментария",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1331,7 +1332,7 @@
 			"response": []
 		},
 		{
-			"name": "Корректное редактирование комментария №3",
+			"name": "PRIVAT: Корректное редактирование комментария №3",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1397,7 +1398,7 @@
 			"response": []
 		},
 		{
-			"name": "Проверка редактирования комментария: получение комментария по Id",
+			"name": "PRIVAT: Получение комментария по ID = 3",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1480,7 +1481,7 @@
 			"response": []
 		},
 		{
-			"name": "ERROR: Удаление несуществующего комментария",
+			"name": "PRIVAT: ERROR: Удаление несуществующего комментария",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1551,7 +1552,7 @@
 			"response": []
 		},
 		{
-			"name": "ERROR: Запрос на удаление комментария от несуществующего пользователя",
+			"name": "PRIVAT: ERROR: Удаление комментария запрос от несуществующего пользователя",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1622,7 +1623,7 @@
 			"response": []
 		},
 		{
-			"name": "ERROR: Запрос на удаление чужого комментария",
+			"name": "PRIVAT: ERROR: Запрос на удаление чужого комментария",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1693,7 +1694,7 @@
 			"response": []
 		},
 		{
-			"name": "Корректное удаление комментария №2",
+			"name": "PRIVAT: Корректное удаление комментария №2",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1708,8 +1709,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Ответ должен содержать код статуса 204\", function () {\r",
-							"    pm.expect(pm.response.code).to.be.oneOf([204]);\r",
+							"pm.test(\"Ответ должен содержать код статуса 200 или 204\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);\r",
 							"});\r",
 							""
 						],
@@ -1757,7 +1758,7 @@
 			"response": []
 		},
 		{
-			"name": "Проверка удаления комментария: ошибка получения комментария по commentId = 2",
+			"name": "PRIVAT: Проверка удаления комментария: ошибка получения комментария по commentId = 2",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1825,7 +1826,7 @@
 			"response": []
 		},
 		{
-			"name": "Получение пользователем всех собственных комментариев",
+			"name": "PRIVAT: Получение всех собственных комментариев",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1902,7 +1903,7 @@
 			"response": []
 		},
 		{
-			"name": "Корректное удаление Администратором комментария №1",
+			"name": "ADMIN: Корректное удаление комментария №1",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1917,8 +1918,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Ответ должен содержать код статуса 204\", function () {\r",
-							"    pm.expect(pm.response.code).to.be.oneOf([204]);\r",
+							"pm.test(\"Ответ должен содержать код статуса 200 или 204\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);\r",
 							"});\r",
 							""
 						],
@@ -1931,6 +1932,11 @@
 				"header": [
 					{
 						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
 						"value": "application/json",
 						"type": "text"
 					}
@@ -1960,7 +1966,7 @@
 			"response": []
 		},
 		{
-			"name": "Получение Администратором комментариев с возможностью фильтрации",
+			"name": "ADMIN: Получение комментариев с возможностью фильтрации",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -2062,7 +2068,7 @@
 			"response": []
 		},
 		{
-			"name": "Получение Пользователем комментариев с возможностью фильтрации",
+			"name": "PRIVAT: Получение комментариев с возможностью фильтрации",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -2162,6 +2168,375 @@
 						{
 							"key": "userId",
 							"value": "62"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PRIVAT: Добавление комментария №5",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const source = JSON.parse(pm.request.body.raw);\r",
+							"const target = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Событие должно содержать поля: id, title, annotation, category, paid, eventDate, initiator, description, participantLimit, state, createdOn, location, requestModeration\", function () {\r",
+							"pm.expect(target).to.have.property('id');\r",
+							"pm.expect(target).to.have.property('text');\r",
+							"pm.expect(target).to.have.property('authorName');\r",
+							"pm.expect(target).to.have.property('created');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
+							"    pm.expect(target.id, '\"id\" field').to.eql(5);\r",
+							"    pm.expect(target.title).equal(source.title, 'Текст комментария должен соответствовать тексту в запросе');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"eventId\": 38,\r\n    \"text\": \"5 comment\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/:userId/comments",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						":userId",
+						"comments"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "62",
+							"description": "(Required) id текущего пользователя"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUBLIC: Получение комментария по ID = 3",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const target = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Событие должно содержать поля: id, title, annotation, category, paid, eventDate, initiator, description, participantLimit, state, createdOn, location, requestModeration\", function () {\r",
+							"pm.expect(target).to.have.property('id');\r",
+							"pm.expect(target).to.have.property('text');\r",
+							"pm.expect(target).to.have.property('authorName');\r",
+							"pm.expect(target).to.have.property('created');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
+							"    pm.expect(target.id, '\"id\" field').to.eql(3);\r",
+							"    pm.expect(target.text, '\"text\" field').to.eql('Updated comment');\r",
+							"    pm.expect(target.authorName, '\"authorName\" field').to.eql('Author of comments');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseUrl}}/comments/:commentId",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"comments",
+						":commentId"
+					],
+					"variable": [
+						{
+							"key": "commentId",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ADMIN: Корректное редактирование комментария №5",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"commentId\": 5,\r\n    \"text\": \"Updated 5 comment by Admin\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/admin/comments",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUBLIC: Получение комментария к эвенту с ID = 38",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Получение всех комментариев пользователя\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length, 'Всего комментариев пользователя').to.eql(2);\r",
+							"\r",
+							"    pm.expect(jsonData[0].id, 'result[0]: \"id\" field').to.eql(4);\r",
+							"    pm.expect(jsonData[0].text, 'result[0]: \"text\" field').to.eql('4 comment');\r",
+							"\r",
+							"    pm.expect(jsonData[1].id, 'result[1]: \"id\" field').to.eql(5);\r",
+							"    pm.expect(jsonData[1].text, 'result[1]: \"text\" field').to.eql('Updated 5 comment by Admin');\r",
+							"   });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseUrl}}/events/:eventId/comments",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"events",
+						":eventId",
+						"comments"
+					],
+					"variable": [
+						{
+							"key": "eventId",
+							"value": "38"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PRIVAT: Получение комментариев к эвенту c ID = 38",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Получение всех комментариев пользователя\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length, 'Всего комментариев пользователя').to.eql(2);\r",
+							"\r",
+							"    pm.expect(jsonData[0].id, 'result[0]: \"id\" field').to.eql(4);\r",
+							"    pm.expect(jsonData[0].text, 'result[0]: \"text\" field').to.eql('4 comment');\r",
+							"\r",
+							"    pm.expect(jsonData[1].id, 'result[1]: \"id\" field').to.eql(5);\r",
+							"    pm.expect(jsonData[1].text, 'result[1]: \"text\" field').to.eql('Updated 5 comment by Admin');\r",
+							"   });\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/:userId/events/:eventId/comments",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						":userId",
+						"events",
+						":eventId",
+						"comments"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "62"
+						},
+						{
+							"key": "eventId",
+							"value": "38"
 						}
 					]
 				}
