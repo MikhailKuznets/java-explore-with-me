@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.mainservice.controllers.admincontrollers.parameters.EventAdminRequestParameters;
+import ru.practicum.mainservice.controllers.parameters.event.EventAdminRequestParameters;
 import ru.practicum.mainservice.event.dto.EventFullDto;
 import ru.practicum.mainservice.event.dto.UpdateEventAdminRequest;
 import ru.practicum.mainservice.event.model.EventState;
@@ -57,7 +57,7 @@ public class EventAdminController {
                 .build();
 
         log.info("GET-request was received at 'admin/events' . " +
-                "GET all events with search parameters  = {}.", parameters);
+                "GET all EVENTS with search parameters  = {}.", parameters);
 
         return new ResponseEntity<>(eventService.getAdminEventsWithParameters(parameters, from, size), HttpStatus.OK);
     }

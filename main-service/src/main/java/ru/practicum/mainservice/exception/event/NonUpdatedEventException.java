@@ -1,6 +1,7 @@
-package ru.practicum.mainservice.exception;
+package ru.practicum.mainservice.exception.event;
 
 import org.springframework.http.HttpStatus;
+import ru.practicum.mainservice.exception.ApiError;
 
 import java.time.LocalDateTime;
 

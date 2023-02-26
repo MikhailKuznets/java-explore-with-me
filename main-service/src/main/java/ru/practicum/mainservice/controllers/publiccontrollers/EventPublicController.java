@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.mainservice.controllers.publiccontrollers.parameters.EventPublicRequestParameters;
-import ru.practicum.mainservice.controllers.publiccontrollers.parameters.EventRequestSort;
+import ru.practicum.mainservice.controllers.parameters.event.EventPublicRequestParameters;
+import ru.practicum.mainservice.controllers.parameters.event.EventRequestSort;
 import ru.practicum.mainservice.event.dto.EventFullDto;
 import ru.practicum.mainservice.event.dto.EventShortDto;
 import ru.practicum.mainservice.event.service.EventService;
@@ -52,7 +52,7 @@ public class EventPublicController {
                 .build();
 
         log.info("GET-request was received at '/events' . " +
-                "GET all events with search parameters  = {}.", eventPublicRequestParameters);
+                "GET all EVENTS with search parameters  = {}.", eventPublicRequestParameters);
 
         return new ResponseEntity<>(eventService.getPublicEventsWithParameters(eventPublicRequestParameters, sort,
                 from, size, request), HttpStatus.OK);
@@ -63,7 +63,7 @@ public class EventPublicController {
             @PathVariable @Positive Long eventId,
             HttpServletRequest request) {
         log.info("GET-request was received at '/events/{}' . " +
-                "Get public information about the event with eventId = {}.", eventId, eventId);
+                "Get public information about EVENT with eventID = {}.", eventId, eventId);
         return new ResponseEntity<>(eventService.getPublicEventById(eventId, request), HttpStatus.OK);
     }
 

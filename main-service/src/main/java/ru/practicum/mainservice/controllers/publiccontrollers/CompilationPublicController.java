@@ -26,7 +26,7 @@ public class CompilationPublicController {
     public ResponseEntity<Collection<CompilationDto>> getPublicAllCompilation(
             @RequestParam(required = false) Boolean pinned) {
         log.info("GET-request was received at '/compilations' . " +
-                "Get public information about all compilations with pinned = {}.", pinned);
+                "Get public information about all COMPILATIONS with pinned = {}.", pinned);
         return new ResponseEntity<>(compilationService.getPublicAllCompilation(pinned), HttpStatus.OK);
     }
 
@@ -34,7 +34,7 @@ public class CompilationPublicController {
     public ResponseEntity<CompilationDto> getPublicCompilationById(
             @PathVariable @Positive Long compId) {
         log.info("GET-request was received at '/compilations/{}' . " +
-                "Get public information about the compilation with compId = {}.", compId, compId);
+                "Get public information about the COMPILATION with compID = {}.", compId, compId);
         return new ResponseEntity<>(compilationService.getPublicCompilationById(compId), HttpStatus.OK);
     }
 

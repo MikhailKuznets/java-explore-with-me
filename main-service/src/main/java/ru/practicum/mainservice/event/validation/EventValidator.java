@@ -2,7 +2,7 @@ package ru.practicum.mainservice.event.validation;
 
 import ru.practicum.mainservice.event.dto.NewEventDto;
 import ru.practicum.mainservice.exception.DataValidateException;
-import ru.practicum.mainservice.exception.NonUpdatedEventException;
+import ru.practicum.mainservice.exception.event.NonUpdatedEventException;
 
 import java.time.LocalDateTime;
 

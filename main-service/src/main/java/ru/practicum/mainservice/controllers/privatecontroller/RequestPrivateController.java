@@ -26,7 +26,7 @@ public class RequestPrivateController {
     public ResponseEntity<Collection<ParticipationRequestDto>> getUserRequests(
             @PathVariable @Positive Long userId) {
         log.info("GET-request was received at 'users/{}/requests' . " +
-                "Get all request by USER with userId = {}.", userId, userId);
+                "Get all request by USER with userID = {}.", userId, userId);
         return new ResponseEntity<>(requestService.getUserRequests(userId), HttpStatus.OK);
     }
 
@@ -34,8 +34,8 @@ public class RequestPrivateController {
     public ResponseEntity<ParticipationRequestDto> createRequest(@PathVariable @Positive Long userId,
                                                                  @RequestParam @Positive Long eventId) {
         log.info("POST-request was received at 'users/{}/requests' . " +
-                "A REQUEST was created from the USER with userId = {} to participate " +
-                "in EVENT with eventId = {}.", userId, userId, eventId);
+                "A REQUEST was created from the USER with userID = {} to participate " +
+                "in EVENT with eventID = {}.", userId, userId, eventId);
         return new ResponseEntity<>(requestService.createRequest(userId, eventId), HttpStatus.CREATED);
     }
 
@@ -43,7 +43,7 @@ public class RequestPrivateController {
     public ResponseEntity<ParticipationRequestDto> cancelRequest(@PathVariable @Positive Long userId,
                                                                  @PathVariable @Positive Long requestId) {
         log.info("PATCH-request was received at 'users/{}/requests/{}/cancel' . " +
-                        "The USER with userId = {} cancels the REQUEST with requestId = {} to participate in the EVENT",
+                        "The USER with userID = {} cancels the REQUEST with requestID = {} to participate in the EVENT",
                 userId, requestId, userId, requestId);
         return new ResponseEntity<>(requestService.cancelRequest(userId, requestId), HttpStatus.OK);
     }

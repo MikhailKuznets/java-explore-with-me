@@ -1,26 +1,25 @@
-package ru.practicum.mainservice.controllers.publiccontrollers.parameters;
+package ru.practicum.mainservice.controllers.parameters.comment;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import ru.practicum.mainservice.controllers.parameters.TimeCheckable;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class EventPublicRequestParameters {
-    private String text;
-    private List<Long> catIds;
-    private Boolean paid;
-    private LocalDateTime rangeStart;
-    private LocalDateTime rangeEnd;
-    private Boolean onlyAvailable;
-//    private EventRequestSort sort;
+@NoArgsConstructor
+@SuperBuilder
+public class BaseCommentRequestParameters implements TimeCheckable {
+    protected String text;
+    protected List<Long> eventIds;
+    protected LocalDateTime rangeStart;
+    protected LocalDateTime rangeEnd;
 
+    @Override
     public void checkTime() {
         if (this.rangeStart == null) {
             this.rangeStart = LocalDateTime.now();
@@ -30,5 +29,5 @@ public class EventPublicRequestParameters {
             this.rangeEnd = LocalDateTime.now().plusYears(40_000);
         }
     }
-}
 
+}

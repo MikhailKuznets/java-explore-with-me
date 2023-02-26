@@ -8,7 +8,7 @@ import ru.practicum.mainservice.category.mapper.CategoryMapper;
 import ru.practicum.mainservice.category.model.Category;
 import ru.practicum.mainservice.category.repository.CategoryRepository;
 import ru.practicum.mainservice.event.repository.EventRepository;
-import ru.practicum.mainservice.exception.CategoryIsNotEmptyException;
+import ru.practicum.mainservice.exception.category.CategoryIsNotEmptyException;
 import ru.practicum.mainservice.exception.InvalidIdException;
 
 import java.time.LocalDateTime;

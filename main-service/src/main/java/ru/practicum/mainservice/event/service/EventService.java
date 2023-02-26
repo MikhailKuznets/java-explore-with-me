@@ -10,9 +10,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.mainservice.category.model.Category;
 import ru.practicum.mainservice.category.repository.CategoryRepository;
-import ru.practicum.mainservice.controllers.admincontrollers.parameters.EventAdminRequestParameters;
-import ru.practicum.mainservice.controllers.publiccontrollers.parameters.EventPublicRequestParameters;
-import ru.practicum.mainservice.controllers.publiccontrollers.parameters.EventRequestSort;
+import ru.practicum.mainservice.comment.mapper.CommentMapper;
+import ru.practicum.mainservice.comment.model.Comment;
+import ru.practicum.mainservice.comment.repository.CommentRepository;
+import ru.practicum.mainservice.controllers.parameters.event.BaseEventRequestParameters;
+import ru.practicum.mainservice.controllers.parameters.event.EventAdminRequestParameters;
+import ru.practicum.mainservice.controllers.parameters.event.EventPublicRequestParameters;
+import ru.practicum.mainservice.controllers.parameters.event.EventRequestSort;
 import ru.practicum.mainservice.event.dto.*;
 import ru.practicum.mainservice.event.mapper.EventMapper;
 import ru.practicum.mainservice.event.model.*;
@@ -21,7 +25,7 @@ import ru.practicum.mainservice.event.updater.EventUpdater;
 import ru.practicum.mainservice.event.updater.UtilityEvent;
 import ru.practicum.mainservice.event.validation.EventValidator;
 import ru.practicum.mainservice.exception.InvalidIdException;
-import ru.practicum.mainservice.exception.NonUpdatedEventException;
+import ru.practicum.mainservice.exception.event.NonUpdatedEventException;
 import ru.practicum.mainservice.user.model.User;
 import ru.practicum.mainservice.user.repository.UserRepository;
 import ru.practicum.statclient.StatClient;
@@ -42,7 +46,9 @@ public class EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final CommentRepository commentRepository;
     private final EventMapper eventMapper;
+    private final CommentMapper commentMapper;
     private final StatClient statClient;
 
 
@@ -64,14 +70,18 @@ public class EventService {
     public EventFullDto getPrivateEventById(Long eventId, Long userId) {
         findUser(userId);
         EventFullDto eventFullDto = eventMapper.toFullEventDto(findEvent(eventId));
-        return setViewsToEventFullDto(eventFullDto);
+        setViewsToEventFullDto(eventFullDto);
+        setComments(eventFullDto);
+        return eventFullDto;
     }
 
     public EventFullDto getPublicEventById(Long eventId, HttpServletRequest request) {
         Event event = findEvent(eventId);
         addHit(request);
         EventFullDto eventFullDto = eventMapper.toFullEventDto(event);
-        return setViewsToEventFullDto(eventFullDto);
+        setViewsToEventFullDto(eventFullDto);
+        setComments(eventFullDto);
+        return eventFullDto;
     }
 
     public Collection<EventShortDto> getPublicEventsWithParameters(
@@ -99,37 +109,6 @@ public class EventService {
         return eventDtos;
     }
 
-    private BooleanBuilder getPublicPredicate(EventPublicRequestParameters parameters) {
-        BooleanBuilder predicate = new BooleanBuilder();
-
-        String text = parameters.getText();
-        List<Long> catIds = parameters.getCatIds();
-        Boolean paid = parameters.getPaid();
-        LocalDateTime rangeStart = parameters.getRangeStart();
-        LocalDateTime rangeEnd = parameters.getRangeEnd();
-        Boolean onlyAvailable = parameters.getOnlyAvailable();
-
-        if (text != null) {
-            predicate.and(QEvent.event.annotation.likeIgnoreCase(text)
-                    .or(QEvent.event.description.likeIgnoreCase(text)));
-        }
-        if (!catIds.isEmpty()) {
-            predicate.and(QEvent.event.category.id.in(catIds));
-        }
-        if (paid != null) {
-            predicate.and(QEvent.event.paid.eq(paid));
-        }
-
-        predicate.and(QEvent.event.eventDate.after(rangeStart));
-        predicate.and(QEvent.event.eventDate.before(rangeEnd));
-
-        if (onlyAvailable) {
-            predicate.and(QEvent.event.participantLimit.eq(0)
-                    .or(QEvent.event.participantLimit.lt(QEvent.event.confirmedRequests)));
-        }
-        return predicate;
-    }
-
     public Collection<EventFullDto> getAdminEventsWithParameters(EventAdminRequestParameters parameters,
                                                                  Integer from, Integer size) {
         PageRequest pageRequest = PageRequest.of(from, size);
@@ -139,36 +118,9 @@ public class EventService {
         return events.stream()
                 .map(eventMapper::toFullEventDto)
                 .map(this::setViewsToEventFullDto)
+                .map(this::setComments)
                 .collect(Collectors.toList());
     }
-
-    private BooleanBuilder getAdminPredicate(EventAdminRequestParameters parameters) {
-        BooleanBuilder predicate = new BooleanBuilder();
-
-        List<Long> userIds = parameters.getUserIds();
-        List<EventState> states = parameters.getStates();
-        List<Long> catIds = parameters.getCatIds();
-        LocalDateTime rangeStart = parameters.getRangeStart();
-        LocalDateTime rangeEnd = parameters.getRangeEnd();
-
-        if (!userIds.isEmpty()) {
-            predicate.and(QEvent.event.initiator.id.in(userIds));
-        }
-        if (!states.isEmpty()) {
-            predicate.and(QEvent.event.state.in(states));
-        }
-        if (!catIds.isEmpty()) {
-            predicate.and(QEvent.event.category.id.in(catIds));
-        }
-        if (rangeStart != null) {
-            predicate.and(QEvent.event.category.id.in(catIds));
-        }
-        if (rangeEnd != null) {
-            predicate.and(QEvent.event.eventDate.before(rangeEnd));
-        }
-        return predicate;
-    }
-
 
     public Collection<EventShortDto> getAllUserEvents(Long unitiatorId, Integer from, Integer size) {
         findUser(unitiatorId);
@@ -201,7 +153,9 @@ public class EventService {
         }
         updatedEvent = updateEventCategory(updatedEvent, utilityEvent.getCategory());
         EventFullDto eventFullDto = eventMapper.toFullEventDto(eventRepository.save(updatedEvent));
-        return setViewsToEventFullDto(eventFullDto);
+        setViewsToEventFullDto(eventFullDto);
+        setComments(eventFullDto);
+        return eventFullDto;
     }
 
     public EventFullDto updateEventByAdmin(Long eventId, UpdateEventAdminRequest updateEventAdminRequest) {
@@ -234,8 +188,13 @@ public class EventService {
         updatedEvent = updateEventCategory(updatedEvent, utilityEvent.getCategory());
         updatedEvent.setPublishedOn(LocalDateTime.now());
         EventFullDto eventFullDto = eventMapper.toFullEventDto(eventRepository.save(updatedEvent));
-        return setViewsToEventFullDto(eventFullDto);
+        setViewsToEventFullDto(eventFullDto);
+        setComments(eventFullDto);
+        return eventFullDto;
     }
+
+
+    //              PRIVATE METHODS
 
     private Event updateEventCategory(Event event, Long newCatId) {
         if (newCatId != null) {
@@ -243,6 +202,73 @@ public class EventService {
             event.setCategory(newCategory);
         }
         return event;
+    }
+
+    private EventFullDto setComments(EventFullDto eventFullDto) {
+        Long eventId = eventFullDto.getId();
+        Collection<Comment> comments = commentRepository.findAllByEvent_Id(eventId);
+        eventFullDto.setComments(comments.stream()
+                .map(commentMapper::toCommentDto)
+                .collect(Collectors.toList()));
+        return eventFullDto;
+    }
+
+    // Подготовка предикатов
+    private BooleanBuilder getPublicPredicate(EventPublicRequestParameters parameters) {
+        BooleanBuilder predicate = getBasePredicate(parameters);
+
+        String text = parameters.getText();
+        Boolean paid = parameters.getPaid();
+        Boolean onlyAvailable = parameters.getOnlyAvailable();
+
+        if (text != null) {
+            predicate.and(QEvent.event.annotation.containsIgnoreCase(text)
+                    .or(QEvent.event.description.containsIgnoreCase(text)));
+        }
+        if (paid != null) {
+            predicate.and(QEvent.event.paid.eq(paid));
+        }
+        if (onlyAvailable) {
+            predicate.and(QEvent.event.participantLimit.eq(0)
+                    .or(QEvent.event.participantLimit.lt(QEvent.event.confirmedRequests)));
+        }
+        return predicate;
+    }
+
+    private BooleanBuilder getAdminPredicate(EventAdminRequestParameters parameters) {
+        BooleanBuilder predicate = getBasePredicate(parameters);
+
+        List<Long> userIds = parameters.getUserIds();
+        List<EventState> states = parameters.getStates();
+
+        if (!userIds.isEmpty()) {
+            predicate.and(QEvent.event.initiator.id.in(userIds));
+        }
+        if (!states.isEmpty()) {
+            predicate.and(QEvent.event.state.in(states));
+        }
+
+        return predicate;
+    }
+
+    private BooleanBuilder getBasePredicate(BaseEventRequestParameters parameters) {
+        BooleanBuilder predicate = new BooleanBuilder();
+
+        List<Long> catIds = parameters.getCatIds();
+        LocalDateTime rangeStart = parameters.getRangeStart();
+        LocalDateTime rangeEnd = parameters.getRangeEnd();
+
+        if (!catIds.isEmpty()) {
+            predicate.and(QEvent.event.category.id.in(catIds));
+        }
+        if (rangeStart != null) {
+            predicate.and(QEvent.event.eventDate.after(rangeStart));
+        }
+        if (rangeEnd != null) {
+            predicate.and(QEvent.event.eventDate.before(rangeEnd));
+        }
+
+        return predicate;
     }
 
     // Поиск Event / User / Category
@@ -277,43 +303,40 @@ public class EventService {
         statClient.saveHit(requestHitDto);
     }
 
+    // Установка количества просмотров в EventFullDto
     private EventFullDto setViewsToEventFullDto(EventFullDto eventFullDto) {
         Long eventId = eventFullDto.getId();
-        Event event = findEvent(eventId);
-        LocalDateTime start = event.getCreatedOn();
-        LocalDateTime end = LocalDateTime.now();
-        String[] uris = {"/events/" + eventId.toString()};
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        List<ViewsStatsRequest> stat = objectMapper
-                .convertValue(statClient.getStat(start, end, uris, false).getBody(), new TypeReference<>() {
-                });
-        if (stat.isEmpty()) {
-            eventFullDto.setViews(0);
-        } else {
-            eventFullDto.setViews(stat.get(0).getHits());
-        }
-
+        Integer views = getViews(eventId);
+        eventFullDto.setViews(views);
         return eventFullDto;
     }
 
+    // Установка количества просмотров в EventShortDto
     private EventShortDto setViewsToShortDto(EventShortDto eventShortDto) {
         Long eventId = eventShortDto.getId();
+        Integer views = getViews(eventId);
+        eventShortDto.setViews(views);
+        return eventShortDto;
+    }
+
+    // Получение количества просмотров определенного Эвента
+    private Integer getViews(Long eventId) {
         Event event = findEvent(eventId);
         LocalDateTime start = event.getCreatedOn();
         LocalDateTime end = LocalDateTime.now();
         String[] uris = {"/events/" + eventId.toString()};
         ObjectMapper objectMapper = new ObjectMapper();
+        Integer views = 0;
 
         List<ViewsStatsRequest> stat = objectMapper
                 .convertValue(statClient.getStat(start, end, uris, false).getBody(), new TypeReference<>() {
                 });
-        if (stat.isEmpty()) {
-            eventShortDto.setViews(0);
-        } else {
-            eventShortDto.setViews(stat.get(0).getHits());
+
+        if (!stat.isEmpty()) {
+            views = stat.get(0).getHits();
         }
 
-        return eventShortDto;
+        return views;
     }
+
 }
